@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 5 / T5.4** |
-| Last PASS | **T5.1-T5.3** |
+| Current phase / task | **Phase 6 / T6.1-T6.2** |
+| Last PASS | **T5.4** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T5.4 — PASS
+- Done: Built Review UI with polling, AgentLog streaming, StepList, and score display.
+- Files: frontend/src/pages/Review.tsx, components/StepList.tsx
+- Tests: npm run build -> success.
+- Next: T6.1-T6.2
 
 ### 2026-11-22 — Task T5.1-T5.3 — PASS
 - Done: AI frame analysis, N1 Safety Gate, deterministic video scoring, and review decision logic.

@@ -66,3 +66,43 @@ class InterviewResponse(BaseModel):
     question: Optional[str] = None
     done: bool
     progress: dict[str, Any]
+
+
+class WitnessInviteCreate(BaseModel):
+    count: int = 3
+
+
+class WitnessInviteResponse(BaseModel):
+    token: str
+    url: str
+
+
+class WitnessPageData(BaseModel):
+    worker_first_name: str
+    skill: str
+    skill_name: Optional[str] = None
+    clip_url: Optional[str] = None
+    steps: List[dict[str, Any]] = []
+
+
+class VouchCreate(BaseModel):
+    witness_name: Optional[str] = None
+    name: Optional[str] = None
+    role: str = "peer"
+    seen_in_person: bool = True
+    known_years_bucket: Optional[str] = None
+    known_years: Optional[str] = None
+    would_hire: bool = True
+    verdict: str = "yes"
+    device_fp: Optional[str] = None
+    has_credential: Optional[bool] = None
+    is_reciprocal: Optional[bool] = None
+    same_device_as_worker: Optional[bool] = None
+
+
+class VouchResponse(BaseModel):
+    vouch_id: str
+    weight: float
+    attempt_id: str
+    status: str = "recorded"
+
