@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 0 / T0.1** (repo, docs, .gitignore, GitHub remote already done by hand; T0.1 builder prompt NOT yet run) |
-| Last PASS | none yet |
+| Current phase / task | **Phase 0 / T0.2** |
+| Last PASS | **T0.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,7 +80,13 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
-- *(empty)*
+
+### 2026-11-22 — Task T0.1 — PASS
+- Done: Scaffolded full folder tree, added .gitkeep, created requirements.txt and .env.example. Updated docs with N1 and N2 rules.
+- Files: backend/, frontend/, docs/01_PRD.md, docs/05_TASKS.md, docs/06_MEMO.md
+- Decisions: Approved N1 (Safety Gate) and N2 (Credential Freshness). Rejected N3, N4.
+- Tests: tree /f /a and git diff --stat passed.
+- Next: T0.2
 
 ## 9. Glossary
 - **Blueprint:** JSON describing a skill's steps, safety items, questions.
