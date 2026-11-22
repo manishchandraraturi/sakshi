@@ -64,6 +64,8 @@ Hand-written JSON per skill: ordered steps, what each step looks like on camera,
 | 2 | Witnessed | Tier 1 + total witness weight >= 1.0 |
 | 3 | Trusted | Tier 1 + weight >= 3.0 + >= 2 distinct witnesses + >= 1 trainer or employer |
 
+**N1 Safety Gate:** If any `safety_critical` item in the blueprint is "fail" or "unclear", the tier is capped at 0 (Needs retry), regardless of the overall score. This is a deterministic rule.
+
 **Witness weight** = role base (peer 1.0, trainer 1.5, employer 1.2, customer 0.8) x 1.5 if witness holds own credential in same trade x 0.5 if reciprocal vouch with this worker x 0.5 if "did not see in person". Same device/IP as the worker -> 0. Duplicate device among witnesses -> only first counts. "Needs work" vouches add 0 weight and show as private feedback to the worker.
 
 **Display Trust Score (0-100)** = 0.5 x video + 0.15 x interview + 0.35 x min(100, weight/3 x 100). Shown with its breakdown. Tier, not score, is what gates.
@@ -88,6 +90,7 @@ Hand-written JSON per skill: ordered steps, what each step looks like on camera,
 - Directory: hirer filters verified workers by trade + area
 - In-browser signature verification (tweetnacl)
 - Consent screen + "delete my data"
+- **N2 Credential Freshness:** Add `valid_until` (issued_at + 12 months) to the credential payload. Verify page displays "Valid until [date]".
 
 **P2 (stretch, only after P0+P1 pass)**
 - Face blur on shared clips; WhatsApp deep-link share; trainer mini-dashboard; PDF credential export

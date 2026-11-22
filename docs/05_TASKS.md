@@ -42,6 +42,7 @@
 
 ## Phase 6 — Witnesses + tier engine (about 3h)
 - T6.1 `trust/weights.py`, `tiers.py` exactly per 01_PRD Section 6; table-driven unit tests (at least 12 cases: reciprocal, same device, trainer, needs_work, etc).
+- Include the N1 Safety Gate rule in the deterministic tier engine: if `safety_critical` is missed -> tier capped at 0.
 - T6.2 Invite endpoints, witness page, vouch endpoint with device fingerprint.
 - T6.3 Witnesses UI with live status polling and WhatsApp share intent.
 - **GATE 6:** all tier tests pass; end-to-end test: attempt reviewed -> 2 vouches -> tier = Witnessed; add trainer + more weight -> Trusted; same-device vouch adds 0.
@@ -49,6 +50,7 @@
 ## Phase 7 — Credential, signing, share (about 3h)
 - T7.1 `crypto/sign.py` (keygen, canonical JSON, sign, verify) + `finalize` endpoint (idempotent).
 - T7.2 `GET /credentials/{id}`, `/pubkey`, `card.png` (Pillow share card with QR), QR component.
+- Add `valid_until` to the canonical JSON payload before signing. Verify page must display the `valid_until` date.
 - T7.3 Credential page with Seal animation; Public profile `/c/:id` with Verify banner and evidence timeline.
 - T7.4 In-browser verification with tweetnacl.
 - **GATE 7:** pytest: signature verifies; flipping one character in payload fails; finalize twice -> same credential id. Manual: scan QR on another phone, verify banner shows; tamper demo shows INVALID.

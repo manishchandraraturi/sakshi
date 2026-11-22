@@ -11,6 +11,9 @@
 8. Never weaken or delete a test to make it pass. Fix the code.
 9. End every task with a report: files changed, commands + output, test results, deviations, open questions.
 10. If the task conflicts with the PRD, flag it and wait.
+11. Environment is **Windows 10/11 + CMD/PowerShell**. Give only Windows-safe commands (no heredocs, no `#` comments, no bash-only flags). Use forward slashes in code paths.
+12. Never pin library versions from memory. Install, then `pip freeze` / `npm ls` and record real versions.
+13. Empty folders get a `.gitkeep` so git keeps them.
 
 ## B. What the in-app AI must and must not do
 **MUST**

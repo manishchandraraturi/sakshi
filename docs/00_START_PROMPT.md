@@ -9,7 +9,7 @@
 ```
 You: "next"
 DeepSeek: BUILDER PROMPT (one task)
-You: paste to Freebuff agent -> agent builds + runs tests -> copy its full report
+You: paste to Antigravity agent -> agent builds + runs tests -> copy its full report
 You: paste report to DeepSeek
 DeepSeek: PASS (+ MEMO UPDATE block) or FIX (+ exact fix prompt)
 You: on PASS, paste MEMO UPDATE into docs/06_MEMO.md, commit, say "next"
@@ -25,7 +25,7 @@ If DeepSeek starts forgetting: open a new chat, paste Section A, then paste **on
 
 ~~~text
 ROLE
-You are the "Prompt Architect + Reviewer" for a hackathon project called SAKSHI. I do NOT want you to write the whole app. I use a separate coding agent (Freebuff, running a DeepSeek flash model) to write code. Your job:
+You are the "Prompt Architect + Reviewer" for a hackathon project called SAKSHI. I do NOT want you to write the whole app. I use a separate coding agent (Google Antigravity, running a Gemini Flash model on high) to write code. Your job:
 1) Write ONE precise builder prompt per task for that agent.
 2) Review the agent's report that I paste back, against the acceptance criteria and gate tests.
 3) Keep the project strictly on spec. You are the guard against hallucination and scope creep.
@@ -75,7 +75,9 @@ Reply now with: "Send me 06_MEMO first."
 ---
 
 ## Section B — Notes for you (not for DeepSeek)
-- **Freebuff agent:** if it supports a rules/instructions file (like `AGENTS.md`), paste the "Agent directives" from `03_RULES.md` there. If not, DeepSeek's builder prompts already carry the constraints.
+- **Antigravity agent:** if it supports a workspace rules/instructions file, paste the "Agent directives" from `03_RULES.md` there. If not, DeepSeek's builder prompts already carry the constraints.
+- **Windows CMD:** you are on Windows. Commands must be CMD-safe: no `#` comments, no heredocs, no `&&` with comments. Windows `tree` has no `-L` flag (use `tree /f /a` or `dir /s /b`).
+- **Git does not track empty folders.** Empty scaffold folders need a `.gitkeep` file or they vanish on clone.
 - **Commit after every PASS.** Git is your undo button.
 - **Never put API keys in prompts or in the repo.** Use `.env` (gitignored).
 - **Sample demo videos** (good / incomplete / fake-reused) are needed from Phase 4. Record them early on a phone, using a *mock* task with no live electricity or hazards.

@@ -22,11 +22,17 @@
 | Signing | Ed25519 (PyNaCl), verify in browser with tweetnacl |
 | Design | Ink black + paper white, ONE orange accent, Syne / Space Grotesk / JetBrains Mono, mobile-first |
 | Cost | Everything free. No paid APIs, no paid hosting |
+| Build tooling | DeepSeek chat writes builder prompts + reviews; **Google Antigravity** (Gemini Flash, high) is the coding agent. Freebuff is no longer used |
+| Environment | Windows 10/11, CMD. Repo root `E:\Projects\sakshi` |
+| Git | Branch `main`, remote `https://github.com/manishchandraraturi/sakshi.git` (note: raraturi). First commit `5486ed9` (docs + .gitignore) |
+| N1 Safety Gate | Approved. Cap tier at 0 if any `safety_critical` item fails. |
+| N2 Credential Freshness | Approved. Payload includes `valid_until` (12 months). |
+| N3 Job Proof & N4 PWA | Rejected. N3 is P2 stretch only. |
 
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 0 / T0.1** |
+| Current phase / task | **Phase 0 / T0.1** (repo, docs, .gitignore, GitHub remote already done by hand; T0.1 builder prompt NOT yet run) |
 | Last PASS | none yet |
 | Blocked by | nothing |
 | DEMO_MODE | false |
@@ -61,6 +67,7 @@
 - No AI deciding tier/score/fraud/signature.
 - No new libraries or endpoints without human approval.
 - No secrets in code, prompts or commits.
+- No N4 PWA or N3 Job Proof entries unless explicitly requested at the end of the hackathon.
 
 ## 8. Changelog (newest first)
 Format for each entry:
