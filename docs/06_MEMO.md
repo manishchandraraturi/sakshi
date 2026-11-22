@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 1 / T1.3** |
-| Last PASS | **T1.2** |
+| Current phase / task | **Phase 2 / T2.1-T2.2** |
+| Last PASS | **T1.3** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T1.3 — PASS
+- Done: Created API routers for skills, workers, attempts. Added schemas, challenge code generator, and integration tests.
+- Files: backend/app/routers/*, services/attempt_service.py, tests/test_routers.py
+- Tests: pytest -q -> 9 passed.
+- Next: T2.1 & T2.2
 
 ### 2026-11-22 — Task T1.2 — PASS
 - Done: Created 3 skill JSON blueprints, Pydantic loader, and tests.

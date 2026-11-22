@@ -17,8 +17,12 @@ export default {
           DEFAULT: '#F6F3EC',
           2: '#EDE9DF',
         },
-        accent: '#FF7A1A',
-        danger: '#B42318',
+        accent: {
+          DEFAULT: '#FF7A1A',
+        },
+        danger: {
+          DEFAULT: '#B42318',
+        },
         muted: {
           DEFAULT: '#6B6B66',
           dark: '#A3A39B',
@@ -34,6 +38,8 @@ export default {
         mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
       },
       borderRadius: {
+        xl2: '28px',
+        '2xl': '28px',
         lg: '28px',
         md: '18px',
         sm: '12px',
