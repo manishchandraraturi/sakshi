@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 1 / T1.2** |
-| Last PASS | **T1.1** |
+| Current phase / task | **Phase 1 / T1.3** |
+| Last PASS | **T1.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T1.2 — PASS
+- Done: Created 3 skill JSON blueprints, Pydantic loader, and tests.
+- Files: backend/app/blueprints/*.json, loader.py, tests/test_blueprints.py
+- Tests: pytest -q -> 6 passed.
+- Next: T1.3
 
 ### 2026-11-22 — Task T1.1 — PASS
 - Done: Setup DB engine, 6 SQLModel tables, lifespan table creation, db tests.
