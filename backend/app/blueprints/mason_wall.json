@@ -1,0 +1,75 @@
+{
+  "skill_id": "mason_wall",
+  "trade": "Mason",
+  "name": "Brick wall alignment (plumb/level check)",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Safety gear and stable footing",
+      "visual_criteria": "Safety boots and gloves worn; clean working platform clear of loose rubble",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_2",
+      "title": "Mortar bed consistency and spreading",
+      "visual_criteria": "Mortar bed spread 10-12mm thick uniformly across brick course with trowel groove",
+      "critical": false,
+      "safety_critical": false
+    },
+    {
+      "id": "step_3",
+      "title": "Brick placement and bond overlap",
+      "visual_criteria": "Bricks laid with frog up, half-brick staggered overlap (stretcher bond) maintained",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_4",
+      "title": "Plumb bob vertical check",
+      "visual_criteria": "Plumb bob suspended from top course hanging 1-2mm clear of face without touching or leaning",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_5",
+      "title": "Spirit level horizontal alignment",
+      "visual_criteria": "Spirit level placed across brick course shows bubble centered between reference lines",
+      "critical": true,
+      "safety_critical": false
+    }
+  ],
+  "safety_items": ["step_1", "step_4"],
+  "scenario_questions": [
+    {
+      "id": "q1",
+      "text": "How do you verify that a newly laid brick course is perfectly horizontal and vertical?",
+      "expected_points": [
+        "Use a spirit level for horizontal level across top course",
+        "Use a plumb rule or plumb bob for vertical straightness"
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Why must bricks be wetted before laying them with cement mortar?",
+      "expected_points": [
+        "Prevents dry bricks from absorbing water from the wet mortar",
+        "Ensures proper hydration and bonding strength of cement"
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "What maximum height of brick wall should you construct in a single day?",
+      "expected_points": [
+        "Not more than 1.5 meters (about 5 feet) per day",
+        "Allows mortar to set and avoids wall tilting under self-weight"
+      ]
+    }
+  ],
+  "common_mistakes": [
+    "Not checking vertical alignment with plumb bob every 2-3 courses",
+    "Inconsistent joint thickness exceeding 12mm",
+    "Using dry bricks that draw moisture from mortar",
+    "Laying continuous vertical joints without proper overlap"
+  ]
+}

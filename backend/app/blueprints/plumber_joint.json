@@ -1,0 +1,75 @@
+{
+  "skill_id": "plumber_joint",
+  "trade": "Plumber",
+  "name": "Pipe joint + leak test",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Water supply shutoff verified",
+      "visual_criteria": "Main line valve closed, line depressurized and drained into bucket",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_2",
+      "title": "Square cut and deburred pipe end",
+      "visual_criteria": "Pipe cut clean at 90 degrees with cutter; inside and outside edges deburred",
+      "critical": false,
+      "safety_critical": false
+    },
+    {
+      "id": "step_3",
+      "title": "Thread sealing tape or solvent application",
+      "visual_criteria": "PTFE tape wrapped clockwise 4-6 turns on threads, or uniform solvent cement coat",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_4",
+      "title": "Joint assembly and wrench tightening",
+      "visual_criteria": "Fitting pushed fully to socket shoulder or hand-tightened plus 1.5 wrench turns",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_5",
+      "title": "Pressure and leak test verification",
+      "visual_criteria": "Water supply restored, joint wiped dry, tissue paper or dry finger shows no dampness under pressure",
+      "critical": true,
+      "safety_critical": true
+    }
+  ],
+  "safety_items": ["step_1", "step_5"],
+  "scenario_questions": [
+    {
+      "id": "q1",
+      "text": "Which direction must PTFE Teflon tape be wrapped around male pipe threads?",
+      "expected_points": [
+        "Wrapped clockwise in the direction of the thread",
+        "Prevents tape from unraveling when screwing fitting on"
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "How do you detect a slow or micro leak after assembling a pressurized joint?",
+      "expected_points": [
+        "Wipe joint completely dry with cloth",
+        "Check with dry tissue paper or look for pressure drop on gauge"
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "What safety precautions do you take before cutting into an existing pipe line?",
+      "expected_points": [
+        "Isolate supply valve and tag it",
+        "Open lower tap to relieve trapped water pressure"
+      ]
+    }
+  ],
+  "common_mistakes": [
+    "Wrapping PTFE tape counter-clockwise causing it to bunch up",
+    "Failing to deburr cut edges leading to flow turbulence and clogging",
+    "Over-tightening threaded PVC or CPVC fittings causing stress cracks",
+    "Re-pressurizing solvent cement joints before cure time elapsed"
+  ]
+}

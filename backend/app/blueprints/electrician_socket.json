@@ -1,0 +1,75 @@
+{
+  "skill_id": "electrician_socket",
+  "trade": "Electrician",
+  "name": "Socket/switch board wiring",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Power isolated and verified",
+      "visual_criteria": "Main isolator switch is OFF, neon tester shows no voltage on terminals",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_2",
+      "title": "Insulation stripped cleanly",
+      "visual_criteria": "Wires stripped 10-12mm without nicking or cutting copper core strands",
+      "critical": false,
+      "safety_critical": false
+    },
+    {
+      "id": "step_3",
+      "title": "Phase and neutral polarity connected",
+      "visual_criteria": "Phase wire (red) into switch/L terminal, neutral (black) into N terminal",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_4",
+      "title": "Earth wire bonded securely",
+      "visual_criteria": "Green earth wire firmly connected to top ground pin terminal",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_5",
+      "title": "Terminal tightness and cover fitment",
+      "visual_criteria": "Screws tight with no bare copper exposed outside terminals; faceplate secured",
+      "critical": false,
+      "safety_critical": false
+    }
+  ],
+  "safety_items": ["step_1", "step_4"],
+  "scenario_questions": [
+    {
+      "id": "q1",
+      "text": "What do you check before touching the wires or terminals on a switchboard?",
+      "expected_points": [
+        "Isolate main power switch or MCB",
+        "Verify absence of voltage with a neon tester or multimeter"
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Why must the phase wire always pass through the switch instead of the neutral wire?",
+      "expected_points": [
+        "Cutting phase disconnects live voltage from the appliance",
+        "Prevents electric shock when appliance is turned off"
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "What should you do if the earth wire is broken or missing in the conduit?",
+      "expected_points": [
+        "Do not leave the board ungrounded",
+        "Inform homeowner/contractor and pull a new continuous earth wire"
+      ]
+    }
+  ],
+  "common_mistakes": [
+    "Not testing for voltage before touching terminals",
+    "Connecting phase wire directly to socket without switch control",
+    "Leaving exposed bare conductor outside terminal blocks",
+    "Loose screw connections causing terminal sparking"
+  ]
+}
