@@ -81,3 +81,39 @@ def start_attempt(
         ),
         error=None,
     )
+
+
+@router.get("/attempts/{attempt_id}", response_model=APIResponse[dict])
+def get_attempt_by_id(
+    attempt_id: str,
+    db: Session = Depends(get_session),
+):
+    attempt = db.exec(select(Attempt).where(Attempt.id == attempt_id)).first()
+    if not attempt:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=APIResponse[None](
+                ok=False,
+                data=None,
+                error=APIError(
+                    code="ATTEMPT_NOT_FOUND",
+                    message=f"Attempt '{attempt_id}' not found.",
+                ),
+            ).model_dump(),
+        )
+
+    return APIResponse[dict](
+        ok=True,
+        data={
+            "id": attempt.id,
+            "worker_id": attempt.worker_id,
+            "skill_id": attempt.skill_id,
+            "status": attempt.status,
+            "challenge_code": attempt.challenge_code,
+            "interview_score": attempt.interview_score,
+            "video_score": attempt.video_score,
+            "decision": attempt.decision,
+            "video_path": attempt.video_path,
+        },
+        error=None,
+    )

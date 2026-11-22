@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 3 / T3.4** |
-| Last PASS | **T3.3** |
+| Current phase / task | **Phase 4 / T4.1-T4.3** |
+| Last PASS | **T3.4** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T3.4 — PASS
+- Done: Interview UI, Web Speech API integration, and AgentLog component.
+- Files: frontend/src/pages/Interview.tsx, hooks/useSpeech.ts, components/AgentLog.tsx
+- Tests: npm run build -> success.
+- Next: T4.1-T4.3
 
 ### 2026-11-22 — Task T3.3 — PASS
 - Done: Implemented interview state machine, AI loop, and POST /interview/next endpoint.

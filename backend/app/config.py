@@ -20,6 +20,7 @@ class Settings:
         self.DEMO_MODE: bool = os.getenv("DEMO_MODE", "false").lower() in ("true", "1", "yes")
         self.MAX_VIDEO_MB: int = int(os.getenv("MAX_VIDEO_MB", "50"))
         self.MAX_VIDEO_SECONDS: int = int(os.getenv("MAX_VIDEO_SECONDS", "120"))
+        self.MIN_VIDEO_SECONDS: int = int(os.getenv("MIN_VIDEO_SECONDS", "3"))
         self.CORS_ORIGINS: str = os.getenv("CORS_ORIGINS", "http://localhost:5173")
         self.PUBLIC_BASE_URL: str = os.getenv("PUBLIC_BASE_URL", "http://localhost:5173")
 
