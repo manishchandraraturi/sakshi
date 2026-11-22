@@ -1,0 +1,21 @@
+# Python
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Env & secrets
+.env
+*.env
+
+# Runtime data & keys
+backend/data/
+backend/keys/
+
+# OS
+.DS_Store
+Thumbs.db
