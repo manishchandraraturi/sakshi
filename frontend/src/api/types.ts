@@ -54,3 +54,62 @@ export interface AttemptResponse {
   fraud_flags: Array<{ code: string; severity?: string; detail: string }>;
   agent_log: string[];
 }
+
+export interface WitnessInvite {
+  token: string;
+  url: string;
+}
+
+export interface WitnessPageStep {
+  id: string;
+  title: string;
+}
+
+export interface WitnessPageData {
+  worker_first_name: string;
+  skill: string;
+  skill_name?: string;
+  clip_url?: string | null;
+  steps: WitnessPageStep[];
+}
+
+export interface VouchCreate {
+  witness_name?: string;
+  name?: string;
+  role: string;
+  seen_in_person: boolean;
+  known_years_bucket?: string;
+  known_years?: string;
+  would_hire: boolean;
+  verdict: string;
+  device_fp?: string;
+}
+
+export interface VouchResponse {
+  vouch_id: string;
+  weight: number;
+  attempt_id: string;
+  status: string;
+}
+
+export interface CredentialResponse {
+  credential_id: string;
+  tier: number;
+  trust_score: number;
+  payload: {
+    cred_id: string;
+    worker_name: string;
+    area: string;
+    trade: string;
+    skill: string;
+    tier: number;
+    trust_score: number;
+    issued_at: string;
+    evidence_sha256: string;
+    witness_count: number;
+    [key: string]: any;
+  };
+  signature: string;
+  issued_at?: string;
+}
+

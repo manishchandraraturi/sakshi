@@ -6,6 +6,9 @@ import SkillPick from './pages/SkillPick'
 import Interview from './pages/Interview'
 import Record from './pages/Record'
 import Review from './pages/Review'
+import Witnesses from './pages/Witnesses'
+import WitnessVouch from './pages/WitnessVouch'
+import Credential from './pages/Credential'
 
 const Placeholder = ({ name }: { name: string }) => (
   <div className="min-h-screen flex items-center justify-center font-mono text-ink">
@@ -23,10 +26,10 @@ export const router = createBrowserRouter([
       { path: '/interview/:attemptId', element: <Interview /> },
       { path: '/record/:attemptId', element: <Record /> },
       { path: '/review/:attemptId', element: <Review /> },
-      { path: '/witnesses/:attemptId', element: <Placeholder name="Witnesses" /> },
-      { path: '/credential/:id', element: <Placeholder name="Credential" /> },
+      { path: '/witnesses/:attemptId', element: <Witnesses /> },
+      { path: '/credential/:id', element: <Credential /> },
       { path: '/c/:id', element: <Placeholder name="Public Profile" /> },
-      { path: '/w/:token', element: <Placeholder name="Witness" /> },
+      { path: '/w/:token', element: <WitnessVouch /> },
       { path: '/directory', element: <Placeholder name="Directory" /> },
       { path: '/dashboard', element: <Placeholder name="Dashboard" /> },
     ],

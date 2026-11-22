@@ -106,3 +106,17 @@ class VouchResponse(BaseModel):
     attempt_id: str
     status: str = "recorded"
 
+
+class CredentialResponse(BaseModel):
+    credential_id: str
+    tier: int
+    trust_score: float
+    payload: dict[str, Any]
+    signature: str
+    issued_at: Optional[str] = None
+
+
+class PubkeyResponse(BaseModel):
+    pubkey: str
+
+

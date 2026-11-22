@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 6 / T6.1-T6.2** |
-| Last PASS | **T5.4** |
+| Current phase / task | **Phase 7 / T6.3-T7.1** |
+| Last PASS | **T6.1-T6.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T6.1-T6.2 — PASS
+- Done: Trust engine (weights, tiers, score), witness service, and endpoints.
+- Files: backend/app/trust/*, services/witness_service.py, routers/witness.py
+- Tests: pytest -q -> 78 passed.
+- Next: T6.3 & T7.1
 
 ### 2026-11-22 — Task T5.4 — PASS
 - Done: Built Review UI with polling, AgentLog streaming, StepList, and score display.
