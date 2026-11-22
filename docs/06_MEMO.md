@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 3 / T3.3** |
-| Last PASS | **T3.1-T3.2** |
+| Current phase / task | **Phase 3 / T3.4** |
+| Last PASS | **T3.3** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T3.3 — PASS
+- Done: Implemented interview state machine, AI loop, and POST /interview/next endpoint.
+- Files: backend/app/agent/*, routers/interview.py, tests/test_agent.py
+- Tests: pytest -q -> 29 passed.
+- Next: T3.4
 
 ### 2026-11-22 — Task T3.1-T3.2 — PASS
 - Done: AI layer (Base, Mock, Gemini, Fallback, Cache), JSON extraction utils, and AI tests.

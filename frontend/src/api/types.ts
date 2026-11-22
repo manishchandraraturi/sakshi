@@ -14,3 +14,18 @@ export interface HealthData {
   status: string;
   demo_mode: boolean;
 }
+
+export interface InterviewRequest {
+  answer?: string;
+}
+
+export interface InterviewProgress {
+  current: number;
+  total: number;
+}
+
+export interface InterviewResponse {
+  question: string | null;
+  done: boolean;
+  progress: InterviewProgress;
+}
