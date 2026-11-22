@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 2 / T2.1-T2.2** |
-| Last PASS | **T1.3** |
+| Current phase / task | **Phase 2 / T2.3** |
+| Last PASS | **T2.1-T2.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T2.1-T2.2 — PASS
+- Done: Setup Tailwind tokens, CSS paper grid, and 6 UI components (Button, Card, Tag, SectionIndex, Skeleton, ErrorBoundary).
+- Files: frontend/tailwind.config.ts, src/index.css, src/components/ui/*
+- Tests: npm run build -> success.
+- Next: T2.3
 
 ### 2026-11-22 — Task T1.3 — PASS
 - Done: Created API routers for skills, workers, attempts. Added schemas, challenge code generator, and integration tests.

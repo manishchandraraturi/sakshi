@@ -1,0 +1,18 @@
+{
+  "landing_title": "Skills, witnessed.",
+  "landing_subtitle": "AI-guided practical tests, human witnesses, and tamper-proof credentials.",
+  "btn_get_verified": "Get verified",
+  "btn_im_hirer": "I'm a hirer",
+  "stat_layers": "3 LAYERS OF PROOF",
+  "stat_languages": "3 LANGUAGES",
+  "stat_paper": "0 PAPER",
+  "choose_language": "Choose your language",
+  "choose_language_sub": "Audio questions and instructions will follow this choice.",
+  "pick_skill": "Pick your trade",
+  "pick_skill_sub": "Select the trade you want to get verified in.",
+  "btn_start": "Start assessment",
+  "starting": "Starting...",
+  "steps_count": "steps",
+  "est_time": "est. 3 mins",
+  "loading_skills": "Loading skill blueprints..."
+}
