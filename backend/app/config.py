@@ -17,6 +17,7 @@ class Settings:
     def __init__(self) -> None:
         self.GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
         self.FALLBACK_AI_KEY: str = os.getenv("FALLBACK_AI_KEY", "")
+        self.AI_MODEL_NAME: str = os.getenv("AI_MODEL_NAME", "gemini-2.5-flash")
         self.DEMO_MODE: bool = os.getenv("DEMO_MODE", "false").lower() in ("true", "1", "yes")
         self.MAX_VIDEO_MB: int = int(os.getenv("MAX_VIDEO_MB", "50"))
         self.MAX_VIDEO_SECONDS: int = int(os.getenv("MAX_VIDEO_SECONDS", "120"))

@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 4 / T4.1-T4.3** |
-| Last PASS | **T3.4** |
+| Current phase / task | **Phase 5 / T5.1-T5.3** |
+| Last PASS | **T4.1-T4.3** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T4.1-T4.3 — PASS
+- Done: Video recording UI, upload endpoint, metadata checks, frame extraction, and duplicate fraud checks. Added GET /attempts/{id}.
+- Files: frontend/src/pages/Record.tsx, hooks/useRecorder.ts, backend/app/video/*, routers/video.py
+- Tests: pytest -q -> 34 passed, npm run build -> success.
+- Next: T5.1-T5.3
 
 ### 2026-11-22 — Task T3.4 — PASS
 - Done: Interview UI, Web Speech API integration, and AgentLog component.

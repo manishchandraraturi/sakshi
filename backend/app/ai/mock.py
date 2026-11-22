@@ -42,23 +42,22 @@ class MockAI(BaseAI):
 
         # Prompt 1: Analyzer
         if any(k in combined_text for k in ["analyzer", "visual criteria", "evidence checker", "frames", "video_quality"]):
+            import re
+            extracted_ids = re.findall(r"step[\s_]?id:\s*([a-zA-Z0-9_-]+)", prompt, re.IGNORECASE)
+            if not extracted_ids:
+                extracted_ids = ["step_1", "step_2"]
+
             return json.dumps(
                 {
                     "steps": [
                         {
-                            "id": "step_1",
+                            "id": sid,
                             "verdict": "pass",
                             "confidence": 0.95,
                             "evidence_frames": [0, 1],
-                            "note": "Work area prepared and correct tools observed.",
-                        },
-                        {
-                            "id": "step_2",
-                            "verdict": "pass",
-                            "confidence": 0.92,
-                            "evidence_frames": [2, 3],
-                            "note": "Required step technique accurately executed.",
-                        },
+                            "note": f"Visual criteria verified for {sid}.",
+                        }
+                        for sid in extracted_ids
                     ],
                     "challenge_code_seen": True,
                     "safety_items_seen": ["safety_gloves", "safety_glasses"],
