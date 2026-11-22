@@ -1,14 +1,26 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from sqlmodel import SQLModel
 
 from app.config import settings
+from app.db import engine
 from app.schemas import APIError, APIResponse
+import app.models  # noqa: F401 - ensure all tables are registered in SQLModel.metadata
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    SQLModel.metadata.create_all(engine)
+    yield
+
 
 app = FastAPI(
     title="SAKSHI API",
     description="Skills, witnessed. Micro-credentialing platform.",
     version="0.1.0",
+    lifespan=lifespan,
 )
 
 # Configure CORS

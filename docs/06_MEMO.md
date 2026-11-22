@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 0 / T0.2** |
-| Last PASS | **T0.1** |
+| Current phase / task | **Phase 1 / T1.1** |
+| Last PASS | **T0.3** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,20 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T0.3 — PASS
+- Done: Initialized Vite React+TS app, configured Tailwind and fonts, setup API client envelope, and health check on Landing page.
+- Files: frontend/src/api/types.ts, client.ts, pages/Landing.tsx, vite.config.ts
+- Decisions: Added custom TS declaration for tweetnacl-util.
+- Tests: npm run build -> success.
+- Next: T1.1
+
+### 2026-11-22 — Task T0.2 — PASS
+- Done: Setup FastAPI backend, config loader, generic API envelope, global error handler, and /api/health endpoint.
+- Files: backend/app/config.py, schemas.py, main.py, tests/test_main.py
+- Decisions: Used python-dotenv for config. Unpinned requirements.
+- Tests: pytest -q -> 1 passed.
+- Next: T0.3
 
 ### 2026-11-22 — Task T0.1 — PASS
 - Done: Scaffolded full folder tree, added .gitkeep, created requirements.txt and .env.example. Updated docs with N1 and N2 rules.

@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --ink: #0A0A0A;
+  --ink-2: #171717;
+  --ink-3: #2A2A2A;
+  --paper: #F6F3EC;
+  --paper-2: #EDE9DF;
+  --line: rgba(10, 10, 10, 0.10);
+  --line-dark: rgba(246, 243, 236, 0.14);
+  --muted: #6B6B66;
+  --muted-dark: #A3A39B;
+  --accent: #FF7A1A;
+  --danger: #B42318;
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 150ms;
+  --dur: 350ms;
+  --dur-page: 500ms;
+
+  --font-display: 'Syne', 'Noto Sans Devanagari', 'Noto Sans Kannada', system-ui, sans-serif;
+  --font-body: 'Space Grotesk', 'Noto Sans Devanagari', 'Noto Sans Kannada', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  margin: 0;
+  min-height: 100vh;
+  /* Paper grid background per 04_DESIGN.md section 4 */
+  background-image: 
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-attachment: fixed;
+}
