@@ -114,6 +114,7 @@ class CredentialResponse(BaseModel):
     payload: dict[str, Any]
     signature: str
     issued_at: Optional[str] = None
+    valid_until: Optional[str] = None
 
 
 class PubkeyResponse(BaseModel):

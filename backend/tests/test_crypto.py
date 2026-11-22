@@ -157,6 +157,9 @@ def test_finalize_attempt_and_issue_credential():
     assert cred_data["trust_score"] > 0
     assert "signature" in cred_data
     assert cred_data["payload"]["worker_name"] == "Manoj Tiwari"
+    # N2 Credential Freshness rule check
+    assert "valid_until" in cred_data["payload"]
+    assert len(cred_data["payload"]["valid_until"]) > 0
 
     # Verify signature matches payload
     sig = cred_data["signature"]
@@ -182,6 +185,12 @@ def test_finalize_attempt_and_issue_credential():
     assert get_data["tier"] == 2
     assert "pubkey" in get_data
 
+    # 4. Fetch share card PNG via GET /api/credentials/{id}/card.png
+    res_card = client.get(f"/api/credentials/{cred_data['credential_id']}/card.png")
+    assert res_card.status_code == 200
+    assert "image/png" in res_card.headers["content-type"]
+    assert len(res_card.content) > 1000
+
 
 def test_get_public_key_endpoint():
     res = client.get("/api/pubkey")
@@ -190,3 +199,27 @@ def test_get_public_key_endpoint():
     assert body["ok"] is True
     assert "pubkey" in body["data"]
     assert len(body["data"]["pubkey"]) > 0
+
+
+def test_card_png_generation_direct():
+    from app.crypto.card import generate_share_card
+
+    test_payload = {
+        "cred_id": "c-1234-5678",
+        "worker_name": "Ravi Kumar",
+        "trade": "Electrician",
+        "skill": "Socket wiring",
+        "area": "Bangalore",
+        "tier": 2,
+        "trust_score": 85,
+        "witness_count": 2,
+        "valid_until": "2027-11-22T00:00:00",
+        "evidence_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    }
+    png_bytes = generate_share_card(
+        test_payload, "http://localhost:5173/c/c-1234-5678"
+    )
+    assert isinstance(png_bytes, bytes)
+    assert len(png_bytes) > 2000
+    assert png_bytes[:8] == b"\x89PNG\r\n\x1a\n"  # PNG magic header
+

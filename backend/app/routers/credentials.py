@@ -5,12 +5,15 @@ Router for issuing, finalizing, signing, and fetching Ed25519 digital credential
 """
 import json
 import uuid
+from datetime import timedelta
 from typing import Any, Dict, Optional
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, Response, status
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
 from app.blueprints.loader import load_blueprint
+from app.config import settings
+from app.crypto.card import generate_share_card
 from app.crypto.sign import get_public_key_b64, sign_payload
 from app.db import get_session
 from app.models import Attempt, Credential, Vouch, Worker, utc_now
@@ -70,6 +73,7 @@ def finalize_attempt_and_issue_credential(
                 payload=payload_data,
                 signature=existing_cred.signature_b64,
                 issued_at=existing_cred.issued_at.isoformat(),
+                valid_until=payload_data.get("valid_until"),
             ),
             error=None,
         )
@@ -149,6 +153,7 @@ def finalize_attempt_and_issue_credential(
     # 6. Build canonical payload & Ed25519 signature
     cred_id = str(uuid.uuid4())
     issued_at = utc_now()
+    valid_until = (issued_at + timedelta(days=365)).isoformat()
     payload: Dict[str, Any] = {
         "cred_id": cred_id,
         "worker_name": worker_name,
@@ -156,8 +161,9 @@ def finalize_attempt_and_issue_credential(
         "trade": trade,
         "skill": skill_name,
         "tier": computed_tier,
-        "trust_score": computed_trust_score,
+        "trust_score": int(computed_trust_score),
         "issued_at": issued_at.isoformat(),
+        "valid_until": valid_until,
         "evidence_sha256": attempt.video_sha256 or "none",
         "witness_count": len(vouches),
     }
@@ -195,8 +201,58 @@ def finalize_attempt_and_issue_credential(
             payload=payload,
             signature=signature_b64,
             issued_at=issued_at.isoformat(),
+            valid_until=valid_until,
         ),
         error=None,
+    )
+
+
+@router.get(
+    "/credentials/{credential_id}/card.png",
+    response_class=Response,
+)
+def get_credential_card(
+    credential_id: str,
+    db: Session = Depends(get_session),
+):
+    """
+    Renders and returns a 600x1000 WhatsApp share-card PNG with QR code.
+    """
+    cred = db.exec(
+        select(Credential).where(Credential.id == credential_id)
+    ).first()
+    if not cred:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=APIResponse[None](
+                ok=False,
+                data=None,
+                error=APIError(
+                    code="CREDENTIAL_NOT_FOUND",
+                    message=f"Credential '{credential_id}' not found.",
+                ),
+            ).model_dump(),
+        )
+
+    try:
+        payload_data = json.loads(cred.payload_json)
+    except Exception:
+        payload_data = {
+            "cred_id": cred.id,
+            "worker_name": "Tradesperson",
+            "tier": cred.tier,
+            "trust_score": cred.trust_score,
+        }
+
+    verify_url = f"{settings.PUBLIC_BASE_URL}/c/{cred.id}"
+    card_bytes = generate_share_card(payload_data, verify_url)
+
+    return Response(
+        content=card_bytes,
+        media_type="image/png",
+        headers={
+            "Content-Disposition": f'inline; filename="sakshi_{cred.id[:8]}.png"',
+        },
     )
 
 

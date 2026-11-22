@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 7 / T6.3-T7.1** |
-| Last PASS | **T6.1-T6.2** |
+| Current phase / task | **Phase 7 / T7.2-T7.4** |
+| Last PASS | **T6.3-T7.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T6.3-T7.1 — PASS
+- Done: Witnesses UI, WitnessVouch page, Ed25519 signing, and Finalize endpoint.
+- Files: backend/app/crypto/sign.py, routers/credentials.py, frontend/src/pages/Witnesses.tsx, WitnessVouch.tsx
+- Tests: pytest -q -> 84 passed, npm run build -> success.
+- Next: T7.2-T7.4
 
 ### 2026-11-22 — Task T6.1-T6.2 — PASS
 - Done: Trust engine (weights, tiers, score), witness service, and endpoints.

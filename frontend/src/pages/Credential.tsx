@@ -223,12 +223,32 @@ export default function Credential() {
                 </div>
               </Card>
 
-              {/* Phase 7.3 teaser */}
-              <div className="p-4 rounded-xl bg-orange/5 border border-orange/20 text-xs text-ink/70 font-sans flex items-start gap-2.5">
-                <ShieldCheck className="w-5 h-5 text-orange shrink-0 mt-0.5" />
-                <p>
-                  <strong>Phase 7.3 Preview:</strong> Public QR verification, WhatsApp share-card PNG generation, and one-tap hirer verification will be activated in the next step.
-                </p>
+              {/* Actions: View Public Profile & Download Share Card */}
+              <div className="space-y-3 pt-2">
+                <Link to={`/c/${cred.credential_id}`} className="block">
+                  <Button
+                    variant="primary"
+                    className="w-full justify-center h-14 text-base font-semibold !bg-orange text-paper hover:!bg-orange/90 shadow-lg"
+                  >
+                    <ShieldCheck className="w-5 h-5 mr-2" />
+                    <span>View Public Profile & Verify Signature</span>
+                  </Button>
+                </Link>
+
+                <a
+                  href={`/api/credentials/${cred.credential_id}/card.png`}
+                  download={`sakshi_card_${cred.credential_id.slice(0, 8)}.png`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button
+                    variant="secondary"
+                    className="w-full justify-center h-12 text-sm font-semibold !bg-ink/5 hover:!bg-ink/10"
+                  >
+                    <span>Download WhatsApp Share Card (PNG)</span>
+                  </Button>
+                </a>
               </div>
             </>
           )}
@@ -236,7 +256,7 @@ export default function Credential() {
 
         <footer className="pt-4 border-t border-ink/10">
           <Link to="/">
-            <Button variant="secondary" className="w-full justify-center h-12 text-sm font-semibold">
+            <Button variant="secondary" className="w-full justify-center h-11 text-xs font-semibold">
               Return to Sakshi Home
             </Button>
           </Link>

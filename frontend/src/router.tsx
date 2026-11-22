@@ -9,6 +9,7 @@ import Review from './pages/Review'
 import Witnesses from './pages/Witnesses'
 import WitnessVouch from './pages/WitnessVouch'
 import Credential from './pages/Credential'
+import PublicProfile from './pages/PublicProfile'
 
 const Placeholder = ({ name }: { name: string }) => (
   <div className="min-h-screen flex items-center justify-center font-mono text-ink">
@@ -28,7 +29,7 @@ export const router = createBrowserRouter([
       { path: '/review/:attemptId', element: <Review /> },
       { path: '/witnesses/:attemptId', element: <Witnesses /> },
       { path: '/credential/:id', element: <Credential /> },
-      { path: '/c/:id', element: <Placeholder name="Public Profile" /> },
+      { path: '/c/:id', element: <PublicProfile /> },
       { path: '/w/:token', element: <WitnessVouch /> },
       { path: '/directory', element: <Placeholder name="Directory" /> },
       { path: '/dashboard', element: <Placeholder name="Dashboard" /> },
