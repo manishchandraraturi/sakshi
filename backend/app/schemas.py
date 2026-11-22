@@ -56,3 +56,13 @@ class SkillSummary(BaseModel):
 class TradeSummary(BaseModel):
     trade: str
     skills: List[SkillSummary]
+
+
+class InterviewRequest(BaseModel):
+    answer: Optional[str] = None
+
+
+class InterviewResponse(BaseModel):
+    question: Optional[str] = None
+    done: bool
+    progress: dict[str, Any]

@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 
 from app.config import settings
 from app.db import engine
-from app.routers import attempts, skills, workers
+from app.routers import attempts, interview, skills, workers
 from app.schemas import APIError, APIResponse
 import app.models  # noqa: F401 - ensure all tables are registered in SQLModel.metadata
 
@@ -52,6 +52,7 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
 app.include_router(skills.router, prefix="/api")
 app.include_router(workers.router, prefix="/api")
 app.include_router(attempts.router, prefix="/api")
+app.include_router(interview.router, prefix="/api")
 
 
 @app.get("/api/health", response_model=APIResponse[dict])

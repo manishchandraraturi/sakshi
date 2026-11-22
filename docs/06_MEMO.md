@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 3 / T3.1-T3.2** |
-| Last PASS | **T2.3** |
+| Current phase / task | **Phase 3 / T3.3** |
+| Last PASS | **T3.1-T3.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T3.1-T3.2 — PASS
+- Done: AI layer (Base, Mock, Gemini, Fallback, Cache), JSON extraction utils, and AI tests.
+- Files: backend/app/ai/*, tests/test_ai.py
+- Tests: pytest -q -> 27 passed.
+- Next: T3.3
 
 ### 2026-11-22 — Task T2.3 — PASS
 - Done: Setup i18n, Zustand store, page transitions, and built Landing, Language, SkillPick pages with API integration.
