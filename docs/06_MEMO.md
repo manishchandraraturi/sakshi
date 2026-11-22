@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 5 / T5.1-T5.3** |
-| Last PASS | **T4.1-T4.3** |
+| Current phase / task | **Phase 5 / T5.4** |
+| Last PASS | **T5.1-T5.3** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T5.1-T5.3 — PASS
+- Done: AI frame analysis, N1 Safety Gate, deterministic video scoring, and review decision logic.
+- Files: backend/app/trust/score.py, agent/review.py, routers/attempts.py, tests/test_review.py
+- Tests: pytest -q -> 42 passed.
+- Next: T5.4
 
 ### 2026-11-22 — Task T4.1-T4.3 — PASS
 - Done: Video recording UI, upload endpoint, metadata checks, frame extraction, and duplicate fraud checks. Added GET /attempts/{id}.
