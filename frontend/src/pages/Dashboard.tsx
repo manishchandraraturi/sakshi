@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Award,
@@ -8,7 +9,9 @@ import {
   Briefcase,
   Compass,
   Lightbulb,
+  Trash2,
 } from 'lucide-react'
+import { fetchApi } from '../api/client'
 import PageTransition from '../components/PageTransition'
 import Seal from '../components/Seal'
 import { Button } from '../components/ui/Button'
@@ -18,12 +21,37 @@ import { useSessionStore } from '../store/session'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { workerToken } = useSessionStore()
+  const { workerToken, workerId, resetSession } = useSessionStore()
+  const [deleting, setDeleting] = useState(false)
 
   // Use stored worker identity or fallback to seeded hero candidate
   const workerName = workerToken ? 'Worker' : 'Ravi Kumar'
   const currentTier = 2 // Demonstration active tier: Tier 2 Witnessed
   const currentScore = 85
+
+  const handleDeleteData = async () => {
+    const confirmed = window.confirm(
+      'Are you sure you want to delete all your verification data? This will permanently remove all uploaded videos, extracted frames, and revoke any credentials issued to you.'
+    )
+    if (!confirmed) return
+
+    setDeleting(true)
+    try {
+      if (workerId && workerToken) {
+        await fetchApi(`/api/workers/${workerId}/data`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${workerToken}`,
+          },
+        })
+      }
+    } catch (err) {
+      console.error('Failed to delete worker data:', err)
+    } finally {
+      resetSession()
+      navigate('/')
+    }
+  }
 
   const ladderSteps = [
     {
@@ -269,6 +297,25 @@ export default function Dashboard() {
                 </Card>
               ))}
             </div>
+          </div>
+
+          {/* Privacy & Data Ownership (Delete My Data) */}
+          <div className="pt-4 border-t border-ink/10 flex flex-col sm:flex-row items-center justify-between gap-3 bg-red-50/50 p-4 rounded-xl border border-red-200">
+            <div className="text-left">
+              <p className="text-xs font-bold text-ink">Worker Privacy & Data Sovereignty</p>
+              <p className="text-[11px] text-ink/70">
+                You own your verification records. Permanently erase all demonstration videos and revoke your credential anytime.
+              </p>
+            </div>
+            <Button
+              variant="danger"
+              onClick={handleDeleteData}
+              disabled={deleting}
+              className="text-xs px-4 py-2 shrink-0 bg-red-600 hover:bg-red-700 text-paper font-semibold shadow-sm"
+            >
+              <Trash2 className="w-3.5 h-3.5 mr-1.5" />
+              <span>{deleting ? 'Erasing Data...' : 'Delete My Data'}</span>
+            </Button>
           </div>
         </main>
 

@@ -320,11 +320,19 @@ export default function Review() {
             {isNeedsRerecord && (
               <Button
                 variant="primary"
-                onClick={() => navigate(`/record/${attemptId}`)}
+                onClick={() => {
+                  const failedStepIds = data.steps
+                    .filter((s) => s.verdict.toLowerCase() !== 'pass')
+                    .map((s) => s.id)
+                  const stepsParam = encodeURIComponent(failedStepIds.join(','))
+                  navigate(`/record/${attemptId}?rerecord=true&steps=${stepsParam}`, {
+                    state: { step_ids: failedStepIds },
+                  })
+                }}
                 className="w-full justify-center h-14 text-base font-semibold !bg-orange text-paper hover:!bg-orange/90 shadow-lg"
               >
                 <RotateCcw className="w-5 h-5 mr-2" />
-                <span>Re-record Video Steps</span>
+                <span>Re-record Failed Steps</span>
               </Button>
             )}
 

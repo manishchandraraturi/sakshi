@@ -32,7 +32,7 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 8 / T8.1 & T8.4** |
+| Current phase / task | **Phase 8 / T8.1-T8.4** |
 | Last PASS | **T8.2-T8.3 & T9.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |

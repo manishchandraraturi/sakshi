@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Video,
@@ -19,6 +19,13 @@ import { useRecorder } from '../hooks/useRecorder'
 export default function Record() {
   const { attemptId } = useParams<{ attemptId: string }>()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const location = useLocation()
+
+  const isRerecord = searchParams.get('rerecord') === 'true'
+  const stepsParam = searchParams.get('steps')
+  const stateStepIds = (location.state as { step_ids?: string[] } | null)?.step_ids
+  const stepIdsToRerecord = stateStepIds || (stepsParam ? stepsParam.split(',') : [])
 
   const [challengeCode, setChallengeCode] = useState<string>('----')
   const [videoSource, setVideoSource] = useState<'live' | 'upload'>('live')
@@ -109,19 +116,35 @@ export default function Record() {
 
     try {
       const formData = new FormData()
-      formData.append('file', activeVideoBlob, 'demonstration.mp4')
 
-      const response = await fetch(
-        `/api/attempts/${attemptId}/video?source=${videoSource}`,
-        {
+      if (isRerecord) {
+        formData.append('file', activeVideoBlob, 'rerecord.webm')
+        formData.append('step_ids', JSON.stringify(stepIdsToRerecord))
+
+        const response = await fetch(`/api/attempts/${attemptId}/rerecord`, {
           method: 'POST',
           body: formData,
-        }
-      )
+        })
 
-      const result = await response.json()
-      if (!result.ok) {
-        throw new Error(result.error?.message || 'Failed to process video')
+        const result = await response.json()
+        if (!result.ok) {
+          throw new Error(result.error?.message || 'Failed to process re-recorded video')
+        }
+      } else {
+        formData.append('file', activeVideoBlob, 'demonstration.mp4')
+
+        const response = await fetch(
+          `/api/attempts/${attemptId}/video?source=${videoSource}`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        )
+
+        const result = await response.json()
+        if (!result.ok) {
+          throw new Error(result.error?.message || 'Failed to process video')
+        }
       }
 
       // Transition to review page
@@ -149,7 +172,7 @@ export default function Record() {
             <div className="flex items-center gap-2">
               <span className="font-heading font-black text-lg text-ink">SAKSHI</span>
               <span className="text-ink/30">•</span>
-              <Tag variant="accent">Video Demo</Tag>
+              <Tag variant="accent">{isRerecord ? 'Re-record Failed Steps' : 'Video Demo'}</Tag>
             </div>
             <div className="font-mono text-xs text-ink/60">
               {isRecording ? (
@@ -161,6 +184,12 @@ export default function Record() {
               )}
             </div>
           </div>
+          {isRerecord && stepIdsToRerecord.length > 0 && (
+            <div className="mt-2 text-xs font-mono text-orange flex items-center gap-1.5">
+              <span>Steps requiring re-recording:</span>
+              <span className="font-bold underline">{stepIdsToRerecord.join(', ')}</span>
+            </div>
+          )}
         </header>
 
         {/* Video Canvas Container */}
@@ -271,7 +300,7 @@ export default function Record() {
                   className="flex-1 justify-center h-12 !bg-orange text-paper hover:!bg-orange/90"
                 >
                   <CheckCircle2 className="w-4 h-4 mr-2" />
-                  Submit Video
+                  {isRerecord ? 'Submit Re-record' : 'Submit Video'}
                 </Button>
               </div>
 

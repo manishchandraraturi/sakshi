@@ -132,4 +132,14 @@ class DirectoryItem(BaseModel):
     issued_at: Optional[str] = None
 
 
+class RerecordResponse(BaseModel):
+    attempt_id: str
+    status: str
+    video_score: float
+    decision: str
+    steps: List[dict[str, Any]] = []
+    agent_log: List[str] = []
+    rerecorded_steps: List[str] = []
+
+
 
