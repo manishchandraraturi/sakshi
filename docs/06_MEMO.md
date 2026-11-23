@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 8 / T8.2-T8.3 & T9.1** |
-| Last PASS | **T7.2-T7.4** |
+| Current phase / task | **Phase 8 / T8.1 & T8.4** |
+| Last PASS | **T8.2-T8.3 & T9.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-23 — Task T8.2-T8.3 & T9.1 — PASS
+- Done: Database seed script with 3 authentic candidates, Directory API & UI with filtering, and Worker Dashboard with skill ladder.
+- Files: backend/app/seed.py, routers/directory.py, tests/test_directory.py, frontend/src/pages/Directory.tsx, Dashboard.tsx
+- Tests: pytest -q -> 89 passed, npm run build -> success.
+- Next: T8.1 & T8.4
 
 ### 2026-11-22 — Task T7.2-T7.4 — PASS
 - Done: Share card generation, public profile, Seal animation, and browser verification.

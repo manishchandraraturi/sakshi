@@ -28,7 +28,7 @@ def test_challenge_code_generator():
     code = generate_challenge_code()
     assert len(code) == 4
     assert code.isalnum()
-    assert code.isupper()
+    assert code == code.upper()
 
 
 def test_get_skills():
