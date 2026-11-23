@@ -40,6 +40,16 @@ class FallbackAI(BaseAI):
                 logger.debug("Cache hit in FallbackAI")
                 return cached_response
 
+        # In DEMO_MODE: immediately return mock response without attempting external network calls
+        from app.config import settings
+        if getattr(settings, "DEMO_MODE", False):
+            logger.info("DEMO_MODE active: bypassing external network AI calls, selecting MockAI immediately.")
+            from app.ai.mock import MockAI
+            for provider in self.providers:
+                if isinstance(provider, MockAI):
+                    return provider.generate_content(prompt, system_instruction, image_paths)
+            return MockAI().generate_content(prompt, system_instruction, image_paths)
+
         errors: list[str] = []
         for provider in self.providers:
             provider_name = provider.__class__.__name__

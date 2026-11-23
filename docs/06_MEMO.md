@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 8 / T8.1-T8.4** |
-| Last PASS | **T8.2-T8.3 & T9.1** |
+| Current phase / task | **Phase 9 / T9.2-T9.3** |
+| Last PASS | **T8.1-T8.4** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-23 — Task T8.1-T8.4 — PASS
+- Done: Delete My Data endpoint + UI, and re-record failed steps endpoint + UI.
+- Files: backend/app/routers/workers.py, attempts.py, frontend/src/pages/Dashboard.tsx, Record.tsx, Review.tsx
+- Tests: pytest -q -> 94 passed, npm run build -> success.
+- Next: T9.2-T9.3
 
 ### 2026-11-23 — Task T8.2-T8.3 & T9.1 — PASS
 - Done: Database seed script with 3 authentic candidates, Directory API & UI with filtering, and Worker Dashboard with skill ladder.

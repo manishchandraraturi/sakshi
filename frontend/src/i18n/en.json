@@ -14,5 +14,16 @@
   "starting": "Starting...",
   "steps_count": "steps",
   "est_time": "est. 3 mins",
-  "loading_skills": "Loading skill blueprints..."
+  "loading_skills": "Loading skill blueprints...",
+  "directory_title": "Verified Worker Directory",
+  "directory_sub": "Directly hire skilled workers backed by cryptographic proof and witness vouches.",
+  "filter_trade": "Trade",
+  "filter_area": "Area",
+  "all_trades": "All Trades",
+  "all_areas": "All Areas",
+  "no_workers_found": "No verified workers match the selected criteria.",
+  "delete_my_data": "Delete My Data",
+  "signature_valid": "CRYPTOGRAPHIC SIGNATURE VALID",
+  "signature_invalid": "SIGNATURE INVALID — TAMPER DETECTED",
+  "skill_ladder": "Skill Ladder"
 }

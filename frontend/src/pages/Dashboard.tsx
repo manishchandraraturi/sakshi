@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Award,
@@ -10,6 +10,7 @@ import {
   Compass,
   Lightbulb,
   Trash2,
+  AlertCircle,
 } from 'lucide-react'
 import { fetchApi } from '../api/client'
 import PageTransition from '../components/PageTransition'
@@ -17,12 +18,37 @@ import Seal from '../components/Seal'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Tag } from '../components/ui/Tag'
+import { Skeleton } from '../components/ui/Skeleton'
 import { useSessionStore } from '../store/session'
 
 export default function Dashboard() {
   const navigate = useNavigate()
-  const { workerToken, workerId, resetSession } = useSessionStore()
+  const { workerToken, workerId, attemptId, resetSession } = useSessionStore()
   const [deleting, setDeleting] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [activeAttempt, setActiveAttempt] = useState<any>(null)
+
+  useEffect(() => {
+    if (!attemptId) return
+    let isMounted = true
+    setLoading(true)
+    fetchApi<any>(`/api/attempts/${attemptId}`)
+      .then((res) => {
+        if (isMounted && res.data) {
+          setActiveAttempt(res.data)
+        }
+      })
+      .catch((err) => {
+        if (isMounted) setError(err.message || 'Failed to load active assessment')
+      })
+      .finally(() => {
+        if (isMounted) setLoading(false)
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [attemptId])
 
   // Use stored worker identity or fallback to seeded hero candidate
   const workerName = workerToken ? 'Worker' : 'Ravi Kumar'
@@ -82,6 +108,19 @@ export default function Dashboard() {
   ]
 
   const recentAttempts = [
+    ...(activeAttempt
+      ? [
+          {
+            id: activeAttempt.id,
+            skill: (activeAttempt.skill_id || 'Trade Assessment').replace(/_/g, ' ').toUpperCase(),
+            trade: 'Current Attempt',
+            date: 'Today',
+            status: activeAttempt.decision || activeAttempt.status,
+            score: Math.round(activeAttempt.video_score || 85),
+            tier: 1,
+          },
+        ]
+      : []),
     {
       id: 'att-elec-01',
       skill: 'Socket wiring & continuity test',
@@ -123,6 +162,17 @@ export default function Dashboard() {
         </header>
 
         <main className="space-y-6">
+          {error && (
+            <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {loading && (
+            <Skeleton className="h-44 w-full rounded-2xl" />
+          )}
+
           {/* Welcome Hero Card */}
           <Card className="p-6 bg-white border border-ink/15 shadow-sm space-y-5">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
