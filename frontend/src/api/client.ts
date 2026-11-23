@@ -22,13 +22,22 @@ export async function fetchApi<T>(
 ): Promise<ApiResponse<T>> {
   const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
+  const { headers, ...restOptions } = options || {};
+  const isFormData = typeof FormData !== 'undefined' && restOptions.body instanceof FormData;
+
+  const defaultHeaders: Record<string, string> = isFormData
+    ? {}
+    : { 'Content-Type': 'application/json' };
+
+  const mergedHeaders: Record<string, string> = {
+    ...defaultHeaders,
+    ...((headers as Record<string, string>) || {}),
+  };
+
   try {
     const response = await fetch(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      ...options,
+      ...restOptions,
+      headers: mergedHeaders,
     });
 
     let payload: any;

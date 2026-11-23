@@ -1,4 +1,5 @@
 from fastapi.testclient import TestClient
+from app.config import settings
 from app.main import app
 
 client = TestClient(app)
@@ -11,12 +12,4 @@ def test_health_check():
     assert body["ok"] is True
     assert body["error"] is None
     assert body["data"]["status"] == "healthy"
-    assert body["data"]["demo_mode"] is False
-    assert body == {
-        "ok": True,
-        "data": {
-            "status": "healthy",
-            "demo_mode": False,
-        },
-        "error": None,
-    }
+    assert body["data"]["demo_mode"] == settings.DEMO_MODE

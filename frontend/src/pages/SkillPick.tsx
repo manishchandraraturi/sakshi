@@ -87,7 +87,11 @@ export default function SkillPick() {
       const { worker_id, token } = workerRes.data
       setWorkerToken(token, worker_id)
 
-      console.log('[SkillPick] 2. Starting attempt for skill:', skillId)
+      console.log('[SkillPick] 2. Starting attempt for skill:', skillId, 'with Bearer token:', token)
+
+      if (!skillId) {
+        throw new Error('No skill ID provided for attempt creation')
+      }
 
       // 2. Start attempt
       const attemptRes = await fetchApi<{
@@ -97,6 +101,7 @@ export default function SkillPick() {
       }>('/api/attempts', {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -117,7 +122,7 @@ export default function SkillPick() {
       console.error('[SkillPick Error starting assessment]:', err)
       const errorData = (err as any)?.data || (err as any)?.response?.data
       if (errorData) {
-        console.error('API Error Response Data:', errorData)
+        console.error('API Error Response Object:', JSON.stringify(errorData, null, 2))
       }
       const message = err instanceof Error ? err.message : 'Failed to start assessment'
       alert(`Error starting assessment: ${message}`)

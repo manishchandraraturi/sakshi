@@ -82,8 +82,8 @@ Format for each entry:
 ```
 
 ### 2026-11-23 — Task T9.4 — PASS
-- Done: Fixed SkillPick vertical text orientation (-90deg upright), added Back buttons to SkillPick and Language, and robust error handling/UUID generation for worker registration.
-- Files: frontend/src/pages/SkillPick.tsx, Language.tsx, api/client.ts
+- Done: Fixed 422 error on attempt creation by resolving headers object spread overwrite in fetchApi; fixed SkillPick vertical text orientation (-90deg upright), added Back buttons to SkillPick and Language.
+- Files: frontend/src/api/client.ts, frontend/src/pages/SkillPick.tsx, Language.tsx
 - Tests: npm run build -> success.
 - Next: Final demo rehearsal
 
