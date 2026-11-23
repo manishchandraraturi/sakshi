@@ -81,6 +81,12 @@ Format for each entry:
 - Next: T#.#
 ```
 
+### 2026-11-23 — Task T9.4 — PASS
+- Done: Fixed SkillPick vertical text orientation (-90deg upright), added Back buttons to SkillPick and Language, and robust error handling/UUID generation for worker registration.
+- Files: frontend/src/pages/SkillPick.tsx, Language.tsx, api/client.ts
+- Tests: npm run build -> success.
+- Next: Final demo rehearsal
+
 ### 2026-11-23 — Task T8.1-T8.4 — PASS
 - Done: Delete My Data endpoint + UI, and re-record failed steps endpoint + UI.
 - Files: backend/app/routers/workers.py, attempts.py, frontend/src/pages/Dashboard.tsx, Record.tsx, Review.tsx

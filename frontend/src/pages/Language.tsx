@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { SectionIndex } from '../components/ui/SectionIndex'
 import { PageTransition } from '../components/PageTransition'
+import { Button } from '../components/ui/Button'
 import { Language as LangType, useSessionStore } from '../store/session'
 import { useTranslation } from '../i18n/t'
 
@@ -31,7 +32,22 @@ export default function Language() {
   return (
     <PageTransition className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
       <div className="max-w-lg w-full mx-auto space-y-8">
-        <SectionIndex index="01" title="LANGUAGE" />
+        <div className="flex items-center justify-between">
+          <SectionIndex index="01" title="LANGUAGE" />
+          <Button
+            variant="primary"
+            onClick={() => {
+              if (window.history.length > 1) {
+                navigate(-1)
+              } else {
+                navigate('/')
+              }
+            }}
+            className="!px-4 !py-1.5 !text-xs !h-8 font-mono rounded-pill !bg-ink text-paper hover:!bg-ink/85 shadow-sm"
+          >
+            Back
+          </Button>
+        </div>
 
         <div className="space-y-3">
           <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-ink tracking-tight">

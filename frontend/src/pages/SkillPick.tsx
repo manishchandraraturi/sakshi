@@ -59,24 +59,35 @@ export default function SkillPick() {
     setStarting(true)
 
     try {
-      // 1. Register worker profile
+      // 1. Generate unique device fingerprint and register worker
+      const deviceFp =
+        typeof crypto !== 'undefined' && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `fp-${Date.now()}`
+
+      const workerPayload = {
+        name: 'Demo Worker',
+        language: language || 'en',
+        area: 'Local',
+        consent: true,
+        device_fp: deviceFp,
+      }
+
+      console.log('[SkillPick] 1. Registering worker:', workerPayload)
+
       const workerRes = await fetchApi<{ worker_id: string; token: string }>('/api/workers', {
         method: 'POST',
-        body: JSON.stringify({
-          name: 'Test Worker',
-          language,
-          area: 'Local',
-          consent: true,
-          device_fp: 'test-fp',
-        }),
+        body: JSON.stringify(workerPayload),
       })
 
       if (!workerRes.data) {
-        throw new Error('Worker registration failed')
+        throw new Error('Worker registration failed: No data returned from server')
       }
 
       const { worker_id, token } = workerRes.data
       setWorkerToken(token, worker_id)
+
+      console.log('[SkillPick] 2. Starting attempt for skill:', skillId)
 
       // 2. Start attempt
       const attemptRes = await fetchApi<{
@@ -94,7 +105,7 @@ export default function SkillPick() {
       })
 
       if (!attemptRes.data) {
-        throw new Error('Attempt creation failed')
+        throw new Error('Attempt creation failed: No data returned from server')
       }
 
       const { attempt_id } = attemptRes.data
@@ -103,6 +114,11 @@ export default function SkillPick() {
       // 3. Navigate to interview
       navigate(`/interview/${attempt_id}`)
     } catch (err: unknown) {
+      console.error('[SkillPick Error starting assessment]:', err)
+      const errorData = (err as any)?.data || (err as any)?.response?.data
+      if (errorData) {
+        console.error('API Error Response Data:', errorData)
+      }
       const message = err instanceof Error ? err.message : 'Failed to start assessment'
       alert(`Error starting assessment: ${message}`)
       setStarting(false)
@@ -112,7 +128,22 @@ export default function SkillPick() {
   return (
     <PageTransition className="min-h-screen flex flex-col p-6 max-w-5xl mx-auto justify-center">
       <div className="w-full space-y-6">
-        <SectionIndex index="02" title="TRADE SELECTION" />
+        <div className="flex items-center justify-between">
+          <SectionIndex index="02" title="TRADE SELECTION" />
+          <Button
+            variant="primary"
+            onClick={() => {
+              if (window.history.length > 1) {
+                navigate(-1)
+              } else {
+                navigate('/')
+              }
+            }}
+            className="!px-4 !py-1.5 !text-xs !h-8 font-mono rounded-pill !bg-ink text-paper hover:!bg-ink/85 shadow-sm"
+          >
+            Back
+          </Button>
+        </div>
 
         <div className="text-center sm:text-left space-y-2">
           <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-ink tracking-tight">
@@ -225,14 +256,21 @@ export default function SkillPick() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex md:flex-col items-center md:items-start justify-between h-full"
+                        className="flex md:flex-col items-center justify-between h-full py-4 select-none"
                       >
-                        <div className="md:writing-vertical-lr md:rotate-180 font-display font-bold text-xl md:text-2xl text-ink tracking-tight">
-                          {item.trade}
-                        </div>
-                        <div className="font-mono text-xs text-muted md:mt-auto">
+                        <div className="font-mono text-xs text-muted hidden md:block">
                           0{idx + 1}
                         </div>
+                        <div
+                          className="font-display font-bold text-xl md:text-2xl text-ink tracking-tight whitespace-nowrap select-none md:-rotate-90 md:my-auto"
+                          style={{ transformOrigin: 'center center' }}
+                        >
+                          {item.trade}
+                        </div>
+                        <div className="font-mono text-xs text-muted md:hidden">
+                          0{idx + 1}
+                        </div>
+                        <div className="hidden md:block w-3" />
                       </motion.div>
                     )}
                   </AnimatePresence>
