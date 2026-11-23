@@ -99,12 +99,13 @@ def test_witness_page_retrieval_and_vouch_submission():
     assert "Pipe joint" in page_data["skill"]
     assert len(page_data["steps"]) >= 4
 
-    # 2. Submit vouch as trainer
+    # 2. Submit vouch as trainer with valid institute code
     res_vouch = client.post(
         f"/api/w/{token}/vouch",
         json={
             "witness_name": "Master Mason Gupta",
             "role": "trainer",
+            "institute_code": "SAKSHI2026",
             "seen_in_person": True,
             "known_years_bucket": "3+",
             "would_hire": True,

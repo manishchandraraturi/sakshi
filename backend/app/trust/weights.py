@@ -54,8 +54,9 @@ def calculate_weight(
 
     # Duplicate device fingerprint among existing vouches -> only first counts
     if device_fp and existing_vouch_device_fps:
-        clean_fp = device_fp.strip()
-        if clean_fp and clean_fp in [fp.strip() for fp in existing_vouch_device_fps if fp]:
+        clean_fp = device_fp.strip().lower()
+        clean_existing = [fp.strip().lower() for fp in existing_vouch_device_fps if fp]
+        if clean_fp and clean_fp in clean_existing:
             return 0.0
 
     # 2. Base role weight

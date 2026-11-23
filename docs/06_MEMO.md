@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 9 / T9.2-T9.3** |
-| Last PASS | **T8.1-T8.4** |
+| Current phase / task | **Phase 10 / Final Audit & Fixes** |
+| Last PASS | **Phase 10 Audit & Fixes** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-23 — Phase 10 Audit & Fixes — PASS
+- Done: Fixed WebM video metadata parsing on Windows using imageio_ffmpeg with OpenCV fallback. Stopped MockAI rubber-stamping by returning 'unclear'/score 0 for unrecognized inputs or adversarial phrases ('my pant is wet'). Enforced deterministic Tier logic (Tier 1 score threshold, Tier 3 trainer/employer requirement). Enforced N1 Safety Gate capping video score and Tier at 0 for failed/unclear safety critical steps. Enforced duplicate device fingerprint returning 0.0 weight. Closed witness role trust hole by requiring institute_code (e.g. SAKSHI2026) or existing credential for trainer/employer (downgrading to peer otherwise). Added institute_code to VouchCreate and UI. Verified valid_until (12 months) in canonical payload. Added 9 regression tests in test_audit_regressions.py.
+- Files: backend/app/video/meta.py, backend/app/ai/mock.py, backend/app/trust/tiers.py, backend/app/trust/weights.py, backend/app/services/witness_service.py, backend/app/schemas.py, backend/tests/test_audit_regressions.py, frontend/src/api/types.ts, frontend/src/pages/WitnessVouch.tsx, docs/06_MEMO.md
+- Tests: pytest -q -> 103 passed in 23.81s, npm run build -> success.
+- Next: Ready for live pitch and production demonstration.
 
 ### 2026-11-23 — Task T9.4 — PASS
 - Done: Fixed 422 error on attempt creation by resolving headers object spread overwrite in fetchApi; fixed SkillPick vertical text orientation (-90deg upright), added Back buttons to SkillPick and Language.

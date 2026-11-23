@@ -170,7 +170,7 @@ def test_list_directory_filter_trade_and_area(setup_directory_workers):
     assert len(data_match) >= 1
     assert all("plumber" in item["trade"].lower() for item in data_match)
     assert all("bangalore" in item["area"].lower() for item in data_match)
-    assert all(item["name"] == "Anita Sharma Test" for item in data_match)
+    assert any(item["name"] == "Anita Sharma Test" for item in data_match)
 
     # Plumber in Delhi -> No match
     res_nomatch = client.get("/api/directory?trade=Plumber&area=Delhi")

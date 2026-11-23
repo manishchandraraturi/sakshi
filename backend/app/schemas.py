@@ -89,6 +89,7 @@ class VouchCreate(BaseModel):
     witness_name: Optional[str] = None
     name: Optional[str] = None
     role: str = "peer"
+    institute_code: Optional[str] = None
     seen_in_person: bool = True
     known_years_bucket: Optional[str] = None
     known_years: Optional[str] = None

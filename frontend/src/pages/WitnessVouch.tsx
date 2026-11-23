@@ -32,6 +32,7 @@ export default function WitnessVouch() {
   // Form State
   const [witnessName, setWitnessName] = useState('')
   const [role, setRole] = useState<'peer' | 'trainer' | 'employer' | 'customer'>('peer')
+  const [instituteCode, setInstituteCode] = useState('')
   const [seenInPerson, setSeenInPerson] = useState(true)
   const [knownYears, setKnownYears] = useState('1-3')
   const [wouldHire, setWouldHire] = useState(true)
@@ -88,6 +89,7 @@ export default function WitnessVouch() {
         body: JSON.stringify({
           witness_name: witnessName.trim() || 'Anonymous Witness',
           role,
+          institute_code: instituteCode.trim() || undefined,
           seen_in_person: seenInPerson,
           known_years_bucket: knownYears,
           would_hire: wouldHire,
@@ -278,6 +280,25 @@ export default function WitnessVouch() {
                   </button>
                 ))}
               </div>
+
+              {(role === 'trainer' || role === 'employer') && (
+                <div className="p-3 bg-white border border-orange/40 rounded-xl space-y-1.5 animate-fadeIn">
+                  <label className="text-[11px] font-mono font-semibold text-ink uppercase flex items-center justify-between">
+                    <span>Institute / Verification Code</span>
+                    <span className="text-[10px] text-ink/40 font-normal">e.g. SAKSHI2026</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter code (e.g. SAKSHI2026)"
+                    value={instituteCode}
+                    onChange={(e) => setInstituteCode(e.target.value)}
+                    className="w-full px-3 py-2 bg-paper border border-ink/20 rounded-lg text-xs font-mono focus:outline-none focus:ring-1 focus:ring-orange"
+                  />
+                  <p className="text-[10px] text-ink/50">
+                    Trainer & employer weights require verification code or existing credential; unverified defaults to peer weight.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Question 2: In-Person Observation */}

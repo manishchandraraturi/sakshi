@@ -4,10 +4,13 @@ backend/app/services/witness_service.py
 Service layer for generating witness invite links, retrieving witness review
 page data, and processing submitted vouches with anti-fraud/weight calculations.
 """
+import logging
 import secrets
 from typing import Any, List, Optional
 from sqlalchemy import func
 from sqlmodel import Session, select
+
+logger = logging.getLogger(__name__)
 
 from app.blueprints.loader import load_blueprint
 from app.models import Attempt, Credential, Vouch, WitnessInvite, Worker, utc_now
@@ -189,9 +192,24 @@ def submit_vouch(
     ).all()
     existing_fps = [v.device_fp for v in existing_vouches if v.device_fp]
 
-    # 5. Deterministic weight calculation
+    # 5. Validate elevated witness roles (trainer / employer)
+    role_claimed = (vouch_data.role or "peer").strip().lower()
+    final_role = role_claimed
+    valid_institute_codes = {"SAKSHI2026", "ITI2026", "NSTI2026", "GOVT_ITI", "SKILL_INDIA"}
+
+    if role_claimed in ("trainer", "employer"):
+        code_provided = (vouch_data.institute_code or "").strip().upper()
+        code_valid = bool(code_provided and code_provided in valid_institute_codes)
+        if not (code_valid or has_cred):
+            logger.warning(
+                f"Witness role '{role_claimed}' claimed without valid institute code or credential. "
+                "Downgrading role to 'peer'."
+            )
+            final_role = "peer"
+
+    # 6. Deterministic weight calculation
     weight = calculate_weight(
-        role=vouch_data.role,
+        role=final_role,
         has_credential=has_cred,
         is_reciprocal=is_recip,
         seen_in_person=vouch_data.seen_in_person,
@@ -201,12 +219,12 @@ def submit_vouch(
         verdict=vouch_data.verdict,
     )
 
-    # 6. Save vouch and consume invite
+    # 7. Save vouch and consume invite
     vouch = Vouch(
         invite_id=invite.id,
         attempt_id=attempt.id,
         witness_name=witness_name,
-        role=vouch_data.role,
+        role=final_role,
         device_fp=device_fp or None,
         seen_in_person=vouch_data.seen_in_person,
         known_years_bucket=known_years_bucket,

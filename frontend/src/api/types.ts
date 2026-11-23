@@ -77,6 +77,7 @@ export interface VouchCreate {
   witness_name?: string;
   name?: string;
   role: string;
+  institute_code?: string;
   seen_in_person: boolean;
   known_years_bucket?: string;
   known_years?: string;
