@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 7 / T7.2-T7.4** |
-| Last PASS | **T6.3-T7.1** |
+| Current phase / task | **Phase 8 / T8.2-T8.3 & T9.1** |
+| Last PASS | **T7.2-T7.4** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-22 — Task T7.2-T7.4 — PASS
+- Done: Share card generation, public profile, Seal animation, and browser verification.
+- Files: backend/app/crypto/card.py, routers/credentials.py, frontend/src/pages/PublicProfile.tsx, utils/verify.ts
+- Tests: pytest -q -> 85 passed, npm run build -> success.
+- Next: T8.2, T8.3 & T9.1
 
 ### 2026-11-22 — Task T6.3-T7.1 — PASS
 - Done: Witnesses UI, WitnessVouch page, Ed25519 signing, and Finalize endpoint.

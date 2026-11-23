@@ -113,3 +113,15 @@ export interface CredentialResponse {
   issued_at?: string;
 }
 
+export interface DirectoryItem {
+  credential_id: string;
+  name: string;
+  trade: string;
+  skill: string;
+  tier: number;
+  trust_score: number;
+  area: string;
+  issued_at?: string;
+}
+
+

@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 
 from app.config import settings
 from app.db import engine
-from app.routers import attempts, credentials, interview, skills, video, witness, workers
+from app.routers import attempts, credentials, directory, interview, skills, video, witness, workers
 from app.schemas import APIError, APIResponse
 import app.models  # noqa: F401 - ensure all tables are registered in SQLModel.metadata
 
@@ -56,6 +56,7 @@ app.include_router(interview.router, prefix="/api")
 app.include_router(video.router, prefix="/api")
 app.include_router(witness.router, prefix="/api")
 app.include_router(credentials.router, prefix="/api")
+app.include_router(directory.router, prefix="/api")
 
 
 @app.get("/api/health", response_model=APIResponse[dict])

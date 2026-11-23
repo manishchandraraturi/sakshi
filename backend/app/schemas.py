@@ -121,3 +121,15 @@ class PubkeyResponse(BaseModel):
     pubkey: str
 
 
+class DirectoryItem(BaseModel):
+    credential_id: str
+    name: str
+    trade: str
+    skill: str
+    tier: int
+    trust_score: float
+    area: str
+    issued_at: Optional[str] = None
+
+
+
