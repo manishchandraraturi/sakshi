@@ -10,10 +10,59 @@ from fastapi import APIRouter, Depends, Query
 from sqlmodel import Session, select
 
 from app.db import get_session
-from app.models import Credential, Worker
-from app.schemas import APIResponse, DirectoryItem
+from app.models import Credential, Vouch, Worker
+from app.schemas import AnalyticsResponse, APIResponse, DirectoryItem
 
 router = APIRouter(tags=["directory"])
+
+
+@router.get("/directory/analytics", response_model=APIResponse[AnalyticsResponse])
+def get_directory_analytics(db: Session = Depends(get_session)):
+    """
+    Returns aggregate workforce analytics for the hirer dashboard:
+    - total_workers: count of registered workers in system
+    - tier_distribution: breakdown by tier (tier_1, tier_2, tier_3)
+    - trade_distribution: breakdown of verified credentials by trade
+    - total_vouches: total recorded peer witness vouches
+    """
+    workers = db.exec(select(Worker)).all()
+    total_workers = len(workers)
+
+    credentials = db.exec(select(Credential).where(Credential.revoked == False)).all()
+    vouches = db.exec(select(Vouch)).all()
+    total_vouches = len(vouches)
+
+    tier_dist = {"tier_1": 0, "tier_2": 0, "tier_3": 0}
+    trade_dist: dict[str, int] = {}
+
+    for cred in credentials:
+        if cred.tier in (1, 2, 3):
+            key = f"tier_{cred.tier}"
+            tier_dist[key] = tier_dist.get(key, 0) + 1
+
+        trade_name = "other"
+        try:
+            payload = json.loads(cred.payload_json)
+            trade_name = payload.get("trade", "") or ""
+        except Exception:
+            trade_name = ""
+
+        if not trade_name and cred.skill_id:
+            trade_name = cred.skill_id.split("_")[0]
+
+        trade_key = trade_name.strip().lower() if trade_name else "other"
+        trade_dist[trade_key] = trade_dist.get(trade_key, 0) + 1
+
+    return APIResponse[AnalyticsResponse](
+        ok=True,
+        data=AnalyticsResponse(
+            total_workers=total_workers,
+            tier_distribution=tier_dist,
+            trade_distribution=trade_dist,
+            total_vouches=total_vouches,
+        ),
+        error=None,
+    )
 
 
 @router.get("/directory", response_model=APIResponse[List[DirectoryItem]])

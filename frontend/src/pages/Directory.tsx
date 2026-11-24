@@ -9,6 +9,7 @@ import {
   Briefcase,
   Users,
   QrCode,
+  BarChart3,
 } from 'lucide-react'
 import PageTransition from '../components/PageTransition'
 import Seal from '../components/Seal'
@@ -106,12 +107,22 @@ export default function Directory() {
               <span className="text-ink/30">•</span>
               <Tag variant="accent">Trades Directory</Tag>
             </div>
-            <Link
-              to="/dashboard"
-              className="text-xs font-mono text-orange hover:underline font-semibold"
-            >
-              Worker Dashboard →
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link
+                to="/analytics"
+                className="text-xs font-mono text-ink/70 hover:text-orange font-semibold flex items-center gap-1 transition-colors"
+              >
+                <BarChart3 className="w-3.5 h-3.5 text-orange" />
+                <span className="hidden sm:inline">Hirer Analytics</span>
+              </Link>
+              <span className="text-ink/20 hidden sm:inline">|</span>
+              <Link
+                to="/dashboard"
+                className="text-xs font-mono text-orange hover:underline font-semibold"
+              >
+                Worker Dashboard →
+              </Link>
+            </div>
           </div>
         </header>
 
@@ -127,14 +138,25 @@ export default function Directory() {
                 and peer-reviewed vouches.
               </p>
             </div>
-            <Button
-              variant="primary"
-              onClick={() => setShowScanner(true)}
-              className="!bg-orange text-paper flex items-center gap-2 self-start sm:self-auto shrink-0 shadow-sm px-4 py-2 text-xs"
-            >
-              <QrCode className="w-4 h-4" />
-              <span>Scan QR to Verify</span>
-            </Button>
+            <div className="flex items-center gap-2 self-start sm:self-auto shrink-0 flex-wrap">
+              <Link to="/analytics">
+                <Button
+                  variant="secondary"
+                  className="flex items-center gap-1.5 px-3 py-2 text-xs border border-ink/20 text-ink hover:bg-ink/5"
+                >
+                  <BarChart3 className="w-3.5 h-3.5 text-orange" />
+                  <span>View Analytics</span>
+                </Button>
+              </Link>
+              <Button
+                variant="primary"
+                onClick={() => setShowScanner(true)}
+                className="!bg-orange text-paper flex items-center gap-2 shadow-sm px-3.5 py-2 text-xs"
+              >
+                <QrCode className="w-4 h-4" />
+                <span>Scan QR</span>
+              </Button>
+            </div>
           </div>
 
           {/* QR Scanner Modal */}

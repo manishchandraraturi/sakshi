@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 17 / T17.1** |
-| Last PASS | **T17.1** |
+| Current phase / task | **Phase 18 / T18.1** |
+| Last PASS | **T18.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T18.1 — PASS
+- Done: Hirer Analytics Dashboard — 1) Created `GET /api/directory/analytics` in `backend/app/routers/directory.py` querying `Worker`, `Credential`, and `Vouch` tables to return real-time workforce intelligence: `total_workers`, `tier_distribution` (`tier_1`, `tier_2`, `tier_3`), `trade_distribution`, and `total_vouches`. 2) Added `AnalyticsResponse` schema in `backend/app/schemas.py`. 3) Created `backend/tests/test_analytics.py` verifying analytics calculations, active tier filtering, and revoked credential exclusion. 4) Built `frontend/src/pages/Analytics.tsx` with pure CSS/Tailwind & Framer Motion charts: 3 top KPI summary cards (Total Workers, Witness Vouches, Active Trades), horizontal progress bar chart for Seal Tier Distribution (Tier 1-3), and trade composition horizontal breakdown. 5) Integrated `/analytics` lazy route in `router.tsx` and added "View Analytics" dashboard CTA and header link in `Directory.tsx`.
+- Files: backend/app/routers/directory.py, backend/app/schemas.py, backend/tests/test_analytics.py, frontend/src/api/types.ts, frontend/src/pages/Analytics.tsx, frontend/src/pages/Directory.tsx, frontend/src/router.tsx, docs/06_MEMO.md
+- Tests: pytest -q -> 117 passed in 18.05s; npm run build -> success (built in 5.86s, PWA precache generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T17.1 — PASS
 - Done: Final UI Delight & Toast System — 1) Created lightweight Zustand UI store in `frontend/src/store/ui.ts` managing global toast notifications with auto-dismiss timers. 2) Created `frontend/src/hooks/useToast.ts` with helper methods for info, success, error, and warning toasts. 3) Built `frontend/src/components/ui/Toast.tsx` featuring an ink-black pill with paper-white text, status icon, Framer Motion entry/exit transitions, and mounted it in `AppLayout` for global coverage. 4) Added `canvas-confetti` and `@types/canvas-confetti`, firing dual corner bursts of orange, ink, and gold confetti on successful credential load in `Credential.tsx`, plus a toast alert on ID copy. 5) Designed a live audio-wave visualizer in `Interview.tsx` with 3 dynamic vertical bouncing bars and pulsing halo indicator when the microphone is active.

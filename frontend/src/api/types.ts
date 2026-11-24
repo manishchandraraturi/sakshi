@@ -137,4 +137,17 @@ export interface DirectoryItem {
   issued_at?: string;
 }
 
+export interface AnalyticsData {
+  total_workers: number;
+  tier_distribution: {
+    tier_1: number;
+    tier_2: number;
+    tier_3: number;
+    [key: string]: number;
+  };
+  trade_distribution: Record<string, number>;
+  total_vouches: number;
+}
+
+
 

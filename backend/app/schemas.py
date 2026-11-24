@@ -143,4 +143,12 @@ class RerecordResponse(BaseModel):
     rerecorded_steps: List[str] = []
 
 
+class AnalyticsResponse(BaseModel):
+    total_workers: int
+    tier_distribution: dict[str, int]
+    trade_distribution: dict[str, int]
+    total_vouches: int
+
+
+
 

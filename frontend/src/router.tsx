@@ -40,6 +40,7 @@ const Credential = lazy(() => import('./pages/Credential'))
 const PublicProfile = lazy(() => import('./pages/PublicProfile'))
 const Directory = lazy(() => import('./pages/Directory'))
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Analytics = lazy(() => import('./pages/Analytics'))
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +57,7 @@ export const router = createBrowserRouter([
       { path: '/c/:id', element: withSuspense(PublicProfile) },
       { path: '/w/:token', element: withSuspense(WitnessVouch) },
       { path: '/directory', element: withSuspense(Directory) },
+      { path: '/analytics', element: withSuspense(Analytics) },
       { path: '/dashboard', element: withSuspense(Dashboard) },
     ],
   },
