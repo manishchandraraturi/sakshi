@@ -42,6 +42,7 @@ export default function Record() {
     stream,
     durationSeconds,
     error: recorderError,
+    isCameraDenied,
   } = useRecorder()
 
   const liveVideoRef = useRef<HTMLVideoElement | null>(null)
@@ -78,20 +79,13 @@ export default function Record() {
     setVideoSource('upload')
     setSubmitError(null)
 
-    // Revoke and set manual blob
     const url = URL.createObjectURL(file)
-    // Directly invoke recorder state bypass
-    // We can simulate having a videoBlob by storing it
-    setCustomUploadedFile(file, url)
+    setUploadedBlob(file)
+    setUploadedUrl(url)
   }
 
   const [uploadedBlob, setUploadedBlob] = useState<Blob | null>(null)
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null)
-
-  const setCustomUploadedFile = (file: File, url: string) => {
-    setUploadedBlob(file)
-    setUploadedUrl(url)
-  }
 
   const activeVideoBlob = uploadedBlob || videoBlob
   const activeVideoUrl = uploadedUrl || videoUrl
@@ -179,6 +173,8 @@ export default function Record() {
                 <span className="text-orange font-bold animate-pulse">RECORDING</span>
               ) : activeVideoUrl ? (
                 <span className="text-ink/80">READY TO SUBMIT</span>
+              ) : isCameraDenied ? (
+                <span className="text-amber-600 font-semibold">UPLOAD READY</span>
               ) : (
                 'CAMERA STANDBY'
               )}
@@ -203,8 +199,31 @@ export default function Record() {
                 playsInline
                 className="w-full h-full object-contain bg-black"
               />
+            ) : isCameraDenied ? (
+              /* 2. Fallback when Camera is Denied or Unavailable */
+              <div className="relative w-full h-full bg-neutral-900 border-2 border-amber-500/40 flex flex-col items-center justify-center p-6 text-center space-y-4">
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-500">
+                  <AlertCircle className="w-8 h-8" />
+                </div>
+                <div className="space-y-1.5 max-w-sm">
+                  <h3 className="font-heading font-bold text-base md:text-lg text-paper">
+                    Camera Access Denied or Unavailable
+                  </h3>
+                  <p className="font-sans text-xs text-paper/70 leading-relaxed">
+                    Camera access denied or unavailable. Please upload an existing video.
+                  </p>
+                </div>
+                <div className="rounded-lg bg-black/70 border border-orange/50 px-3 py-1.5 flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-orange uppercase font-bold tracking-wider">
+                    CODE
+                  </span>
+                  <span className="font-mono text-sm font-extrabold text-paper tracking-widest">
+                    {challengeCode}
+                  </span>
+                </div>
+              </div>
             ) : (
-              /* 2. Live camera feed or standby state */
+              /* 3. Live camera feed or standby state */
               <div className="relative w-full h-full flex items-center justify-center">
                 {stream ? (
                   <video
@@ -228,17 +247,19 @@ export default function Record() {
               </div>
             )}
 
-            {/* Live Challenge Code Corner Overlay */}
-            <div className="absolute top-3 left-3 z-10">
-              <div className="rounded-lg bg-black/85 backdrop-blur-md border border-orange/60 px-3 py-1.5 shadow-md flex items-center gap-2">
-                <span className="text-[10px] font-mono text-orange uppercase font-bold tracking-wider">
-                  CODE
-                </span>
-                <span className="font-mono text-base font-extrabold text-paper tracking-widest">
-                  {challengeCode}
-                </span>
+            {/* Live Challenge Code Corner Overlay (when not in denied mode) */}
+            {!isCameraDenied && (
+              <div className="absolute top-3 left-3 z-10">
+                <div className="rounded-lg bg-black/85 backdrop-blur-md border border-orange/60 px-3 py-1.5 shadow-md flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-orange uppercase font-bold tracking-wider">
+                    CODE
+                  </span>
+                  <span className="font-mono text-base font-extrabold text-paper tracking-widest">
+                    {challengeCode}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Live Recording Timer Overlay */}
             {isRecording && (
@@ -251,7 +272,7 @@ export default function Record() {
             )}
 
             {/* Notice banner at bottom of camera */}
-            {!activeVideoUrl && (
+            {!activeVideoUrl && !isCameraDenied && (
               <div className="absolute bottom-2 inset-x-2 z-10 bg-black/75 backdrop-blur-sm rounded-lg px-3 py-1.5 text-center">
                 <p className="font-mono text-[11px] text-paper/80">
                   Write <span className="text-orange font-bold">{challengeCode}</span> on paper or keep visible on screen
@@ -262,7 +283,7 @@ export default function Record() {
 
           {/* Error messages */}
           <AnimatePresence>
-            {(recorderError || submitError) && (
+            {(recorderError || submitError) && !isCameraDenied && (
               <motion.div
                 initial={{ opacity: 0, y: -6 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -275,6 +296,15 @@ export default function Record() {
             )}
           </AnimatePresence>
         </main>
+
+        {/* Hidden native file input */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="video/*"
+          onChange={handleFileChange}
+          className="hidden"
+        />
 
         {/* Action Controls Footer */}
         <footer className="pt-4 border-t border-ink/10 space-y-3">
@@ -324,8 +354,29 @@ export default function Record() {
               </Button>
               <p className="font-mono text-[11px] text-ink/50">Minimum 5s, maximum 120s</p>
             </div>
+          ) : isCameraDenied ? (
+            /* Camera Denied fallback: Highlight and expand Upload Existing Video */
+            <div className="space-y-2.5">
+              <Button
+                variant="primary"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full justify-center h-14 text-base font-bold !bg-orange text-paper hover:!bg-orange/90 shadow-lg ring-2 ring-orange/40"
+              >
+                <Upload className="w-5 h-5 mr-2" />
+                Upload Existing Video File
+              </Button>
+
+              <Button
+                variant="outline"
+                onClick={startRecording}
+                className="w-full justify-center h-11 text-xs font-mono border-ink/20 text-ink/70 hover:bg-ink/5"
+              >
+                <RotateCcw className="w-3.5 h-3.5 mr-1.5" />
+                Retry Camera Access
+              </Button>
+            </div>
           ) : (
-            /* Standby options: Live record or Upload fallback */
+            /* Standard Standby options: Live record or Upload fallback */
             <div className="space-y-2">
               <Button
                 variant="primary"
@@ -341,14 +392,6 @@ export default function Record() {
                 <span className="text-[11px] font-mono text-ink/40 uppercase">or</span>
                 <span className="h-px bg-ink/10 flex-1" />
               </div>
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="video/*"
-                onChange={handleFileChange}
-                className="hidden"
-              />
 
               <Button
                 variant="secondary"

@@ -32,11 +32,11 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 10 / Final Audit & Fixes** |
+| Current phase / task | **Phase 10 / T10.1** |
 | Last PASS | **Phase 10 Audit & Fixes** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
-| API keys set | GEMINI_API_KEY: no, FALLBACK_AI_KEY: no |
+| API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
 
 ## 4. Phase tracker
 | Phase | Status | Gate passed (date) |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T10.1 — PASS
+- Done: Production hardening — implemented React lazy loading and Suspense code splitting (splitting bundle from >500kB down to 34kB index + vendor chunks, completely resolving Vite chunk warning); added resilient camera access denied / unavailable fallback UI in Record page and useRecorder hook with highlighted file upload; fortified google-genai integration with try/except logging and automatic FallbackAI fallback to MockAI on quota (429) or network errors.
+- Files: frontend/src/router.tsx, frontend/vite.config.ts, frontend/src/hooks/useRecorder.ts, frontend/src/pages/Record.tsx, backend/app/ai/gemini.py, docs/06_MEMO.md
+- Tests: npm run build -> success (no chunk warnings, built in 7.02s), pytest -q -> 103 passed in 11.32s.
+- Next: Final live pitch demonstration.
 
 ### 2026-11-23 — Phase 10 Audit & Fixes — PASS
 - Done: Fixed WebM video metadata parsing on Windows using imageio_ffmpeg with OpenCV fallback. Stopped MockAI rubber-stamping by returning 'unclear'/score 0 for unrecognized inputs or adversarial phrases ('my pant is wet'). Enforced deterministic Tier logic (Tier 1 score threshold, Tier 3 trainer/employer requirement). Enforced N1 Safety Gate capping video score and Tier at 0 for failed/unclear safety critical steps. Enforced duplicate device fingerprint returning 0.0 weight. Closed witness role trust hole by requiring institute_code (e.g. SAKSHI2026) or existing credential for trainer/employer (downgrading to peer otherwise). Added institute_code to VouchCreate and UI. Verified valid_until (12 months) in canonical payload. Added 9 regression tests in test_audit_regressions.py.

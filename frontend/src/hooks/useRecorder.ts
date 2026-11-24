@@ -10,6 +10,7 @@ export interface UseRecorderReturn {
   stream: MediaStream | null
   durationSeconds: number
   error: string | null
+  isCameraDenied: boolean
 }
 
 export function useRecorder(): UseRecorderReturn {
@@ -19,6 +20,7 @@ export function useRecorder(): UseRecorderReturn {
   const [stream, setStream] = useState<MediaStream | null>(null)
   const [durationSeconds, setDurationSeconds] = useState<number>(0)
   const [error, setError] = useState<string | null>(null)
+  const [isCameraDenied, setIsCameraDenied] = useState<boolean>(false)
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const chunksRef = useRef<Blob[]>([])
@@ -42,6 +44,7 @@ export function useRecorder(): UseRecorderReturn {
     setVideoUrl(null)
     setDurationSeconds(0)
     setError(null)
+    setIsCameraDenied(false)
     setIsRecording(false)
   }, [stopTracks, videoUrl])
 
@@ -67,8 +70,13 @@ export function useRecorder(): UseRecorderReturn {
     resetRecording()
     chunksRef.current = []
     setError(null)
+    setIsCameraDenied(false)
 
     try {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera access API is not supported on this device/browser')
+      }
+
       let userStream: MediaStream
       try {
         userStream = await navigator.mediaDevices.getUserMedia({
@@ -125,8 +133,30 @@ export function useRecorder(): UseRecorderReturn {
         setDurationSeconds((prev) => prev + 1)
       }, 1000)
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : 'Camera or microphone access was denied or unavailable'
+      let msg = 'Camera access was denied or unavailable'
+      let denied = true
+
+      if (err instanceof DOMException || err instanceof Error) {
+        msg = err.message
+        const lowerName = (err.name || '').toLowerCase()
+        const lowerMsg = (err.message || '').toLowerCase()
+        if (
+          lowerName.includes('notallowed') ||
+          lowerName.includes('permission') ||
+          lowerName.includes('notfound') ||
+          lowerName.includes('devicesnotfound') ||
+          lowerName.includes('notreadable') ||
+          lowerMsg.includes('denied') ||
+          lowerMsg.includes('permission') ||
+          lowerMsg.includes('not allowed') ||
+          lowerMsg.includes('not found') ||
+          lowerMsg.includes('unavailable')
+        ) {
+          denied = true
+        }
+      }
+
+      setIsCameraDenied(denied)
       setError(msg)
       stopTracks()
       setIsRecording(false)
@@ -151,5 +181,6 @@ export function useRecorder(): UseRecorderReturn {
     stream,
     durationSeconds,
     error,
+    isCameraDenied,
   }
 }
