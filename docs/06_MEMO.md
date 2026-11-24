@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 12 / T12.1** |
-| Last PASS | **T11.1-T11.2** |
+| Current phase / task | **Phase 12 / T12.2** |
+| Last PASS | **T12.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T12.2 — PASS
+- Done: Test suite timeout fix and Dashboard UI polish — 1) Created backend/tests/conftest.py with autouse fixture enforcing settings.DEMO_MODE=True and monkeypatching get_default_ai to return MockAI across agent modules. Updated FallbackAI and loop.py to bypass Gemini live calls during testing, reducing test suite execution time from 44 minutes down to 21 seconds (109 passed). 2) Polished Dashboard UI into a verified worker profile with a large Tier badge (Seal component), interactive Share Profile button (clipboard copy of /c/{id} with toast feedback), animated Skill Ladder progression bar (Tier 1->3 percentage), and recent activity feed displaying AI coaching summary and next actions.
+- Files: backend/tests/conftest.py, backend/app/ai/fallback.py, backend/app/agent/loop.py, frontend/src/pages/Dashboard.tsx, docs/06_MEMO.md
+- Tests: pytest -q -> 109 passed in 21.02s; npm run build -> success (PWA service worker + 33 precache entries generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T12.1 — PASS
 - Done: AI Coaching feature (Prompt 3 from 03_RULES.md) — 1) Added Prompt 3 (Coach/explainer system prompt and user prompt builder) in agent/prompts.py. 2) Implemented generate_coaching in agent/coach.py taking attempt analysis results and failed/unclear steps to produce summary, actionable next_actions, and per-step unclear_steps_tips, integrated into review.py decision pipeline and re-record handler. 3) Added coaching_json column to Attempt model and exposed coaching in GET /api/attempts/{id}. 4) Updated MockAI with dynamic Prompt 3 handling and added test_coaching.py. 5) Updated frontend types (CoachResult, UnclearStepTip), Review UI with prominent AI Coach Card and per-step tips in StepList, and Dashboard UI displaying active coaching guidance for the most recent assessment.

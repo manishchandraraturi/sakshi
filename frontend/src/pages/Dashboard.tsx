@@ -6,12 +6,14 @@ import {
   ShieldCheck,
   CheckCircle2,
   Clock,
-  Briefcase,
   Compass,
   Lightbulb,
   Trash2,
   AlertCircle,
   Target,
+  Share2,
+  Check,
+  Sparkles,
 } from 'lucide-react'
 import { fetchApi } from '../api/client'
 import PageTransition from '../components/PageTransition'
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [activeAttempt, setActiveAttempt] = useState<any>(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (!attemptId) return
@@ -55,6 +58,23 @@ export default function Dashboard() {
   const workerName = workerToken ? 'Worker' : 'Ravi Kumar'
   const currentTier = 2 // Demonstration active tier: Tier 2 Witnessed
   const currentScore = 85
+  const ladderPercentage = Math.round((currentTier / 3) * 100)
+
+  // Credential sharing link
+  const credentialId = activeAttempt?.credential_id || 'demo-electrician-01'
+  const profileUrl = typeof window !== 'undefined' ? `${window.location.origin}/c/${credentialId}` : ''
+
+  const handleShareProfile = async () => {
+    try {
+      if (navigator.clipboard && profileUrl) {
+        await navigator.clipboard.writeText(profileUrl)
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      }
+    } catch (err) {
+      console.error('Failed to copy profile link:', err)
+    }
+  }
 
   const handleDeleteData = async () => {
     const confirmed = window.confirm(
@@ -114,11 +134,11 @@ export default function Dashboard() {
           {
             id: activeAttempt.id,
             skill: (activeAttempt.skill_id || 'Trade Assessment').replace(/_/g, ' ').toUpperCase(),
-            trade: 'Current Attempt',
+            trade: 'Current Assessment',
             date: 'Today',
-            status: activeAttempt.decision || activeAttempt.status,
+            status: activeAttempt.decision || activeAttempt.status || 'Reviewed',
             score: Math.round(activeAttempt.video_score || 85),
-            tier: 1,
+            tier: activeAttempt.decision === 'accept' ? 1 : 0,
           },
         ]
       : []),
@@ -174,102 +194,83 @@ export default function Dashboard() {
             <Skeleton className="h-44 w-full rounded-2xl" />
           )}
 
-          {/* Welcome Hero Card */}
+          {/* Professional Worker Profile Card */}
           <Card className="p-6 bg-white border border-ink/15 shadow-sm space-y-5">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="space-y-1">
-                <span className="text-[11px] font-mono text-ink/50 uppercase tracking-wider block">
-                  Candidate Profile
-                </span>
-                <h1 className="font-heading font-black text-2xl text-ink">
-                  Welcome back, {workerName}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+              <div className="space-y-2 flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[11px] font-mono text-ink/50 uppercase tracking-wider block">
+                    Verified Worker Profile
+                  </span>
+                  <Tag variant="accent" className="text-[9px] py-0 px-2 font-bold">
+                    Tier {currentTier} Active
+                  </Tag>
+                </div>
+
+                <h1 className="font-heading font-black text-2xl sm:text-3xl text-ink">
+                  {workerName}
                 </h1>
-                <p className="font-sans text-xs text-ink/70">
-                  Electrician & Vocational Tradesperson • Trust Score: {currentScore}/100
-                </p>
+
+                <div className="flex flex-wrap items-center gap-2 text-xs text-ink/70 font-sans">
+                  <span className="font-semibold text-ink">Electrician & Vocational Tradesperson</span>
+                  <span>•</span>
+                  <span>Delhi NCR</span>
+                  <span>•</span>
+                  <span className="font-mono text-orange font-bold">Trust Score: {currentScore}/100</span>
+                </div>
               </div>
 
-              <div className="shrink-0 flex items-center gap-3">
-                <Seal tier={currentTier} size={84} />
+              {/* Large Tier Badge using Seal component */}
+              <div className="shrink-0 flex flex-col items-center gap-1.5 self-center sm:self-auto p-2.5 bg-paper/70 rounded-2xl border border-ink/10 shadow-inner">
+                <Seal tier={currentTier} size={92} />
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink/70">
+                  Tier {currentTier} Witnessed
+                </span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-ink/10 flex flex-wrap items-center gap-2.5">
+            {/* Profile Action Buttons */}
+            <div className="pt-3 border-t border-ink/10 flex flex-wrap items-center gap-2.5">
               <Button
                 variant="primary"
                 onClick={() => navigate('/skill')}
-                className="flex-1 min-w-[200px] justify-center h-12 text-sm font-semibold !bg-orange text-paper hover:!bg-orange/90 shadow-md"
+                className="flex-1 min-w-[170px] justify-center h-11 text-xs font-semibold !bg-orange text-paper hover:!bg-orange/90 shadow-md"
               >
                 <span>Start New Assessment</span>
-                <ArrowRight className="w-4 h-4 ml-1.5" />
+                <ArrowRight className="w-3.5 h-3.5 ml-1.5" />
               </Button>
 
-              <Link to="/directory" className="flex-1 min-w-[160px]">
+              <Button
+                variant="secondary"
+                onClick={handleShareProfile}
+                className="flex-1 min-w-[140px] justify-center h-11 text-xs font-semibold"
+              >
+                {copied ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-600" />
+                    <span className="text-emerald-700">Link Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <Share2 className="w-3.5 h-3.5 mr-1.5 text-ink/70" />
+                    <span>Share Profile</span>
+                  </>
+                )}
+              </Button>
+
+              <Link to="/directory" className="min-w-[120px]">
                 <Button
                   variant="secondary"
-                  className="w-full justify-center h-12 text-sm font-semibold"
+                  className="w-full justify-center h-11 text-xs font-semibold"
                 >
-                  <Compass className="w-4 h-4 mr-1.5" />
-                  <span>Public Directory</span>
+                  <Compass className="w-3.5 h-3.5 mr-1.5" />
+                  <span>Directory</span>
                 </Button>
               </Link>
             </div>
           </Card>
 
-          {/* AI Coach Summary for Most Recent Attempt */}
-          {activeAttempt?.coaching?.summary && (
-            <Card className="p-5 bg-orange/5 border border-orange/30 shadow-sm space-y-3.5">
-              <div className="flex items-center justify-between border-b border-orange/15 pb-2.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-full bg-orange/15 flex items-center justify-center text-orange border border-orange/30">
-                    <Lightbulb className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-bold text-sm text-ink">
-                      AI Coach: Recent Attempt Feedback
-                    </h3>
-                    <p className="font-sans text-[11px] text-ink/60">
-                      {(activeAttempt.skill_id || 'Trade Assessment').replace(/_/g, ' ').toUpperCase()}
-                    </p>
-                  </div>
-                </div>
-                <Tag variant="accent" className="text-[9px] py-0 px-2">
-                  Active Feedback
-                </Tag>
-              </div>
-
-              <div className="p-3 bg-white/80 rounded-xl border border-orange/15 text-xs text-ink/80 font-sans leading-relaxed">
-                <p className="font-semibold text-ink mb-1 text-[11px] uppercase font-mono tracking-wider text-orange">
-                  Summary:
-                </p>
-                <p>{activeAttempt.coaching.summary}</p>
-              </div>
-
-              {activeAttempt.coaching.next_actions && activeAttempt.coaching.next_actions.length > 0 && (
-                <div className="space-y-1.5 pt-1">
-                  <span className="font-mono text-[11px] font-bold text-ink/70 uppercase tracking-wider flex items-center gap-1.5">
-                    <Target className="w-3.5 h-3.5 text-orange" />
-                    Recommended Next Actions:
-                  </span>
-                  <div className="space-y-1">
-                    {activeAttempt.coaching.next_actions.map((act: string, idx: number) => (
-                      <div
-                        key={idx}
-                        className="flex items-start gap-2 text-xs text-ink/80 bg-white/70 p-2 rounded-lg border border-orange/10"
-                      >
-                        <span className="w-3.5 h-3.5 rounded-full bg-orange/15 text-orange font-mono text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                          {idx + 1}
-                        </span>
-                        <span className="font-sans leading-tight">{act}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </Card>
-          )}
-
-          {/* Skill Ladder Progress (PRD Section 4 & 6) */}
+          {/* Skill Ladder Progress (Tier 1 -> 3) with Progress Bar */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
@@ -284,7 +285,22 @@ export default function Dashboard() {
             </div>
 
             <Card className="p-5 bg-white border border-ink/15 shadow-sm space-y-4">
-              <div className="space-y-3">
+              {/* Progress Bar */}
+              <div className="space-y-1.5 pb-1">
+                <div className="flex items-center justify-between text-xs font-mono">
+                  <span className="text-ink/60 font-medium">Progression to Master/Trusted</span>
+                  <span className="text-orange font-bold">{ladderPercentage}% Complete</span>
+                </div>
+                <div className="w-full bg-ink/10 h-2.5 rounded-full overflow-hidden p-0.5 border border-ink/5">
+                  <div
+                    className="bg-orange h-full rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${ladderPercentage}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Ladder Step Items */}
+              <div className="space-y-2.5 pt-1">
                 {ladderSteps.map((step) => {
                   const isCurrent = step.current
                   const isDone = step.done && !isCurrent
@@ -355,18 +371,74 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Recent Skill Assessments */}
+          {/* Recent Activity & Coaching Feedback */}
           <div className="space-y-3">
             <div className="flex items-center justify-between px-1">
               <div className="flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-orange" />
+                <Clock className="w-4 h-4 text-orange" />
                 <h2 className="font-heading font-bold text-base text-ink">
-                  Recent Assessments
+                  Recent Activity & Coaching
                 </h2>
               </div>
-              <span className="text-xs font-mono text-ink/50">2 Total</span>
+              <span className="text-xs font-mono text-ink/50">
+                {recentAttempts.length} Records
+              </span>
             </div>
 
+            {/* AI Coaching for Latest Attempt */}
+            {activeAttempt?.coaching?.summary && (
+              <Card className="p-5 bg-orange/5 border border-orange/30 shadow-sm space-y-3.5">
+                <div className="flex items-center justify-between border-b border-orange/15 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-full bg-orange/15 flex items-center justify-center text-orange border border-orange/30">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-heading font-bold text-sm text-ink">
+                        AI Coach: Latest Attempt Feedback
+                      </h3>
+                      <p className="font-sans text-[11px] text-ink/60">
+                        {(activeAttempt.skill_id || 'Trade Assessment').replace(/_/g, ' ').toUpperCase()}
+                      </p>
+                    </div>
+                  </div>
+                  <Tag variant="accent" className="text-[9px] py-0 px-2 font-bold">
+                    Actionable Advice
+                  </Tag>
+                </div>
+
+                <div className="p-3 bg-white/80 rounded-xl border border-orange/15 text-xs text-ink/80 font-sans leading-relaxed">
+                  <p className="font-semibold text-ink mb-1 text-[11px] uppercase font-mono tracking-wider text-orange">
+                    Assessment Summary:
+                  </p>
+                  <p>{activeAttempt.coaching.summary}</p>
+                </div>
+
+                {activeAttempt.coaching.next_actions && activeAttempt.coaching.next_actions.length > 0 && (
+                  <div className="space-y-1.5 pt-1">
+                    <span className="font-mono text-[11px] font-bold text-ink/70 uppercase tracking-wider flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-orange" />
+                      Recommended Next Actions:
+                    </span>
+                    <div className="space-y-1">
+                      {activeAttempt.coaching.next_actions.map((act: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2 text-xs text-ink/80 bg-white/70 p-2 rounded-lg border border-orange/10"
+                        >
+                          <span className="w-3.5 h-3.5 rounded-full bg-orange/15 text-orange font-mono text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <span className="font-sans leading-tight">{act}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </Card>
+            )}
+
+            {/* Assessment History Cards */}
             <div className="space-y-2.5">
               {recentAttempts.map((att) => (
                 <Card

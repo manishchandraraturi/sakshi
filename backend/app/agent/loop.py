@@ -23,8 +23,11 @@ logger = logging.getLogger(__name__)
 
 def get_default_ai() -> BaseAI:
     """Return the configured AI provider with cache and fallback."""
+    import os
+    import sys
     cache = AICache()
-    if settings.DEMO_MODE or not settings.GEMINI_API_KEY:
+    is_test = "pytest" in sys.modules or os.environ.get("PYTEST_CURRENT_TEST") is not None
+    if settings.DEMO_MODE or not settings.GEMINI_API_KEY or is_test:
         return FallbackAI([MockAI()], cache=cache)
     return FallbackAI([GeminiAI(), MockAI()], cache=cache)
 
