@@ -1,0 +1,28 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sakshi-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEMO_MODE=true
+      - PUBLIC_BASE_URL=http://localhost:5173
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:8000
+      - DATABASE_URL=sqlite:///./data/sakshi.db
+    volumes:
+      - ./backend/data:/app/data
+      - ./backend/keys:/app/keys
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sakshi-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

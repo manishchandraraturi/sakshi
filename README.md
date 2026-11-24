@@ -22,7 +22,23 @@ Informal and blue-collar workers (electricians, plumbers, masons) often lack for
 
 ---
 
-## 2. Quickstart Guide (Windows CMD)
+## 2. Run with Docker (Recommended)
+
+Run the complete SAKSHI platform (FastAPI backend + Nginx-served PWA frontend) with a single command:
+
+```bash
+docker-compose up --build
+```
+
+- **Frontend (PWA & Client Verification)**: [http://localhost:5173](http://localhost:5173)
+- **Backend API & Swagger Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+- **Health Check**: [http://localhost:8000/api/health](http://localhost:8000/api/health)
+
+SQLite database records and Ed25519 cryptographic keys persist across runs in `./backend/data` and `./backend/keys`.
+
+---
+
+## 3. Alternative: Local Manual Setup (Windows CMD)
 
 ### Prerequisites
 - Python 3.11+
@@ -88,7 +104,7 @@ The frontend will start at `http://localhost:5173`.
 
 ---
 
-## 3. DEMO_MODE (Offline Fallback for Pitching)
+## 4. DEMO_MODE (Offline Fallback for Pitching)
 
 In high-stakes hackathon demos or unreliable venue Wi-Fi, enable **`DEMO_MODE`** in `backend/.env`:
 
@@ -103,7 +119,7 @@ When `DEMO_MODE=true`:
 
 ---
 
-## 4. Key Endpoints & Routes
+## 5. Key Endpoints & Routes
 
 ### Frontend Routes
 | Route | Description |
@@ -137,12 +153,14 @@ When `DEMO_MODE=true`:
 - `POST /api/w/{token}/vouch` — Submit witness vouch with anti-collusion device fingerprinting.
 - `POST /api/attempts/{id}/finalize` — Deterministic tier engine & Ed25519 signing.
 - `GET /api/credentials/{id}` — Public credential payload with cryptographic signature.
+- `GET /api/credentials/{id}/pdf` — High-resolution A4 official credential certificate PDF.
+- `GET /api/credentials/{id}/card.png` — WhatsApp share-card PNG with QR code.
 - `GET /api/pubkey` — Platform Ed25519 public key.
 - `GET /api/directory` — Filter verified workers by trade and geographic area.
 
 ---
 
-## 5. Live Pitch Demonstration Script (2 Minutes)
+## 6. Live Pitch Demonstration Script (2 Minutes)
 
 1. **The Problem (0:00 - 0:15)**: Show landing page. *"A plumber with 15 years of experience has less verifiable proof than a teenager with a LinkedIn. SAKSHI fixes that in 3 minutes."*
 2. **Worker Demo (0:15 - 0:45)**: Pick trade, voice scenario check in English/Hindi/Kannada, live camera recording with random challenge code.
@@ -156,7 +174,7 @@ When `DEMO_MODE=true`:
 
 ---
 
-## 6. Running Tests
+## 7. Running Tests
 
 ### Backend Tests
 ```cmd
@@ -164,14 +182,14 @@ cd backend
 .venv\Scripts\activate
 pytest -q
 ```
-*Current test suite: 94 passing tests covering models, cryptography, blueprints, fraud checks, review engine, witness weights, directory filters, deletion, and re-recording.*
+*Current test suite: 116 passing tests covering models, cryptography, blueprints, fraud checks, review engine, witness weights, directory filters, deletion, coaching, rate limiting, and PDF exports.*
 
 ### Frontend Production Build
 ```cmd
 cd frontend
 npm run build
 ```
-*TypeScript type-check and Vite production bundling.*
+*TypeScript type-check, Vite code-split bundling, and PWA service worker generation.*
 
 ---
 

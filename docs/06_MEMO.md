@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 15 / T15.1** |
-| Last PASS | **T15.1** |
+| Current phase / task | **Phase 16 / T16.1** |
+| Last PASS | **T16.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T16.1 — PASS
+- Done: Containerization and CI/CD — 1) Created `backend/Dockerfile` using `python:3.11-slim`, installing ffmpeg, libgl1, and libglib2.0-0 for OpenCV, and setting up persistent `/app/data` and `/app/keys` volumes. 2) Created `frontend/Dockerfile` using multi-stage build (`node:20-alpine` build stage + `nginx:alpine` production stage). 3) Created `frontend/nginx.conf` with SPA routing (`try_files $uri $uri/ /index.html`), API reverse proxy to `http://backend:8000`, asset caching, and PWA non-cache headers. 4) Created `docker-compose.yml` linking backend (8000:8000) and frontend (5173:80) with DEMO_MODE, CORS, and volume persistence. 5) Created `.dockerignore` ignoring node_modules, .venv, dist, __pycache__, and git artifacts. 6) Created `.github/workflows/ci.yml` defining automated backend pytest and frontend build CI jobs on GitHub Actions. 7) Added Docker instructions to README.md.
+- Files: backend/Dockerfile, frontend/Dockerfile, frontend/nginx.conf, docker-compose.yml, .dockerignore, .github/workflows/ci.yml, README.md, docs/06_MEMO.md
+- Tests: pytest -q -> 116 passed in 24.84s; npm run build -> success (built in 19.38s, PWA precache generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T15.1 — PASS
 - Done: P2 Stretch Goals — PDF Credential Export & Webcam QR Scanner — 1) Integrated `fpdf2` and built `backend/app/crypto/pdf.py` generating an official, print-ready A4 credential certificate matching SAKSHI design tokens (#F6F3EC paper background, #0A0A0A ink text, #FF5500 orange accent, outer double border, seal metrics card, and embedded Ed25519 verification QR code) with automatic unicode sanitization and latin-1 fallback. 2) Added `GET /api/credentials/{id}/pdf` endpoint with inline PDF Content-Disposition headers. 3) Installed `jsqr` and created `frontend/src/components/QrScanner.tsx` supporting mobile environment camera with fallback, real-time canvas frame scanning, viewfinder reticle, and graceful camera denial fallback. 4) Added "Scan QR to Verify" modal button in `Directory.tsx` navigating directly to `/c/{id}` on detection. 5) Added "Download PDF Certificate" buttons to `PublicProfile.tsx` and `Credential.tsx`. 6) Added unit and endpoint tests in `backend/tests/test_pdf.py`.
