@@ -8,9 +8,11 @@ import {
   AlertCircle,
   Briefcase,
   Users,
+  QrCode,
 } from 'lucide-react'
 import PageTransition from '../components/PageTransition'
 import Seal from '../components/Seal'
+import QrScanner from '../components/QrScanner'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { Tag } from '../components/ui/Tag'
@@ -28,6 +30,28 @@ export default function Directory() {
   // Filter states
   const [selectedTrade, setSelectedTrade] = useState<string>('')
   const [selectedArea, setSelectedArea] = useState<string>('')
+  const [showScanner, setShowScanner] = useState<boolean>(false)
+
+  const handleScan = (scannedData: string) => {
+    setShowScanner(false)
+    const match = scannedData.match(/\/c\/([a-zA-Z0-9_-]+)/)
+    if (match && match[1]) {
+      navigate(`/c/${match[1]}`)
+    } else if (scannedData.startsWith('http://') || scannedData.startsWith('https://')) {
+      try {
+        const url = new URL(scannedData)
+        if (url.pathname.startsWith('/c/')) {
+          navigate(url.pathname)
+        } else {
+          window.location.href = scannedData
+        }
+      } catch {
+        navigate(`/c/${scannedData}`)
+      }
+    } else {
+      navigate(`/c/${scannedData}`)
+    }
+  }
 
   useEffect(() => {
     let isMounted = true
@@ -93,15 +117,33 @@ export default function Directory() {
 
         <main className="space-y-6">
           {/* Title & Introduction */}
-          <div className="space-y-1.5">
-            <h1 className="font-heading font-black text-2xl md:text-3xl text-ink">
-              Verified Tradespeople
-            </h1>
-            <p className="font-sans text-xs md:text-sm text-ink/70">
-              Browse skilled craftspeople with Ed25519 tamper-proof credentials, AI-verified tests,
-              and peer-reviewed vouches.
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="space-y-1.5">
+              <h1 className="font-heading font-black text-2xl md:text-3xl text-ink">
+                Verified Tradespeople
+              </h1>
+              <p className="font-sans text-xs md:text-sm text-ink/70">
+                Browse skilled craftspeople with Ed25519 tamper-proof credentials, AI-verified tests,
+                and peer-reviewed vouches.
+              </p>
+            </div>
+            <Button
+              variant="primary"
+              onClick={() => setShowScanner(true)}
+              className="!bg-orange text-paper flex items-center gap-2 self-start sm:self-auto shrink-0 shadow-sm px-4 py-2 text-xs"
+            >
+              <QrCode className="w-4 h-4" />
+              <span>Scan QR to Verify</span>
+            </Button>
           </div>
+
+          {/* QR Scanner Modal */}
+          {showScanner && (
+            <QrScanner
+              onScan={handleScan}
+              onClose={() => setShowScanner(false)}
+            />
+          )}
 
           {/* Filter Dropdowns Bar */}
           <Card className="p-3.5 bg-white border border-ink/15 shadow-sm space-y-3">

@@ -14,6 +14,7 @@ from sqlmodel import Session, select
 from app.blueprints.loader import load_blueprint
 from app.config import settings
 from app.crypto.card import generate_share_card
+from app.crypto.pdf import generate_pdf
 from app.crypto.sign import get_public_key_b64, sign_payload
 from app.db import get_session
 from app.models import Attempt, Credential, Vouch, Worker, utc_now
@@ -252,6 +253,55 @@ def get_credential_card(
         media_type="image/png",
         headers={
             "Content-Disposition": f'inline; filename="sakshi_{cred.id[:8]}.png"',
+        },
+    )
+
+
+@router.get(
+    "/credentials/{credential_id}/pdf",
+    response_class=Response,
+)
+def get_credential_pdf(
+    credential_id: str,
+    db: Session = Depends(get_session),
+):
+    """
+    Renders and returns a high-resolution A4 certificate PDF with Ed25519 verification QR code.
+    """
+    cred = db.exec(
+        select(Credential).where(Credential.id == credential_id)
+    ).first()
+    if not cred:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=APIResponse[None](
+                ok=False,
+                data=None,
+                error=APIError(
+                    code="CREDENTIAL_NOT_FOUND",
+                    message=f"Credential '{credential_id}' not found.",
+                ),
+            ).model_dump(),
+        )
+
+    try:
+        payload_data = json.loads(cred.payload_json)
+    except Exception:
+        payload_data = {
+            "cred_id": cred.id,
+            "worker_name": "Tradesperson",
+            "tier": cred.tier,
+            "trust_score": cred.trust_score,
+        }
+
+    verify_url = f"{settings.PUBLIC_BASE_URL}/c/{cred.id}"
+    pdf_bytes = generate_pdf(payload_data, verify_url)
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'inline; filename="credential_{cred.id}.pdf"',
         },
     )
 

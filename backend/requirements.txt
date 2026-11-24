@@ -14,3 +14,4 @@ Pillow
 qrcode[pil]
 google-genai
 pytest
+fpdf2

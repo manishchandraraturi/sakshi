@@ -10,6 +10,7 @@ import {
   FileCode,
   Bug,
   RotateCcw,
+  FileText,
 } from 'lucide-react'
 import PageTransition from '../components/PageTransition'
 import Seal from '../components/Seal'
@@ -331,6 +332,22 @@ export default function PublicProfile() {
                   >
                     <Download className="w-5 h-5 mr-2" />
                     <span>Download WhatsApp Share Card (PNG)</span>
+                  </Button>
+                </a>
+
+                <a
+                  href={`/api/credentials/${cred.credential_id}/pdf`}
+                  download={`credential_${cred.credential_id}.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Button
+                    variant="secondary"
+                    className="w-full justify-center h-12 text-sm font-semibold !bg-ink/5 hover:!bg-ink/10 border border-ink/15 text-ink"
+                  >
+                    <FileText className="w-4 h-4 mr-2 text-orange" />
+                    <span>Download PDF Certificate</span>
                   </Button>
                 </a>
 

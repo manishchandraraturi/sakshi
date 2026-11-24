@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 14 / T14.1** |
-| Last PASS | **T13.1** |
+| Current phase / task | **Phase 15 / T15.1** |
+| Last PASS | **T15.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T15.1 — PASS
+- Done: P2 Stretch Goals — PDF Credential Export & Webcam QR Scanner — 1) Integrated `fpdf2` and built `backend/app/crypto/pdf.py` generating an official, print-ready A4 credential certificate matching SAKSHI design tokens (#F6F3EC paper background, #0A0A0A ink text, #FF5500 orange accent, outer double border, seal metrics card, and embedded Ed25519 verification QR code) with automatic unicode sanitization and latin-1 fallback. 2) Added `GET /api/credentials/{id}/pdf` endpoint with inline PDF Content-Disposition headers. 3) Installed `jsqr` and created `frontend/src/components/QrScanner.tsx` supporting mobile environment camera with fallback, real-time canvas frame scanning, viewfinder reticle, and graceful camera denial fallback. 4) Added "Scan QR to Verify" modal button in `Directory.tsx` navigating directly to `/c/{id}` on detection. 5) Added "Download PDF Certificate" buttons to `PublicProfile.tsx` and `Credential.tsx`. 6) Added unit and endpoint tests in `backend/tests/test_pdf.py`.
+- Files: backend/requirements.txt, backend/app/crypto/pdf.py, backend/app/routers/credentials.py, backend/tests/test_pdf.py, frontend/package.json, frontend/src/components/QrScanner.tsx, frontend/src/pages/Directory.tsx, frontend/src/pages/PublicProfile.tsx, frontend/src/pages/Credential.tsx, docs/06_MEMO.md
+- Tests: pytest -q -> 116 passed in 24.84s; npm run build -> success (built in 19.38s, PWA precache generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T14.1 — PASS
 - Done: Network resilience and offline interview caching — 1) Created useNetworkStatus hook listening to browser online/offline events. 2) Built animated OfflineBanner notifying workers of local answer preservation when offline. 3) Updated session store with Zustand persist middleware, storing cachedInterviewState across reloads and tab restarts. 4) Enhanced Interview page to restore chat history from local cache on mount, sync progress on every interaction, guard against offline sends, and preserve user's typed response in input on network failure.
