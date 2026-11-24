@@ -111,36 +111,28 @@ def get_attempt_by_id(
             ).model_dump(),
         )
 
-    # If the attempt is analyzing, trigger the AI analysis and review decision synchronously
-    if attempt.status == "analyzing":
-        review_result = run_review_decision(attempt=attempt, db=db)
-        steps = review_result["steps"]
-        fraud_flags = review_result["fraud_flags"]
-        agent_log = review_result["agent_log"]
-        decision = review_result["decision"]
-        v_score = review_result["video_score"]
-    else:
-        steps = []
-        if attempt.ai_result_json:
-            try:
-                ai_data = json.loads(attempt.ai_result_json)
-                steps = ai_data.get("steps", [])
-            except Exception:
-                steps = []
+    # Read-only attempt status query (pure non-blocking database read)
+    steps = []
+    if attempt.ai_result_json:
+        try:
+            ai_data = json.loads(attempt.ai_result_json)
+            steps = ai_data.get("steps", [])
+        except Exception:
+            steps = []
 
-        fraud_flags = []
-        if attempt.fraud_flags_json:
-            try:
-                fraud_flags = json.loads(attempt.fraud_flags_json)
-            except Exception:
-                fraud_flags = []
+    fraud_flags = []
+    if attempt.fraud_flags_json:
+        try:
+            fraud_flags = json.loads(attempt.fraud_flags_json)
+        except Exception:
+            fraud_flags = []
 
-        agent_log = [
-            f"Status: {attempt.status}",
-            f"Decision: {attempt.decision or 'pending'}",
-        ]
-        decision = attempt.decision
-        v_score = attempt.video_score
+    agent_log = [
+        f"Status: {attempt.status}",
+        f"Decision: {attempt.decision or 'pending'}",
+    ]
+    decision = attempt.decision
+    v_score = attempt.video_score
 
     return APIResponse[dict](
         ok=True,

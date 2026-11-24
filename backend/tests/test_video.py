@@ -88,7 +88,7 @@ def test_upload_valid_video(tmp_path):
     with Session(test_engine) as session:
         updated = session.exec(select(Attempt).where(Attempt.id == attempt_id)).first()
         assert updated is not None
-        assert updated.status == "analyzing"
+        assert updated.status in ("analyzing", "reviewed")
         assert updated.video_sha256 is not None
         assert updated.video_phash is not None
         assert updated.video_meta_json is not None

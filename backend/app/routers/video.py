@@ -1,11 +1,12 @@
 import json
 from pathlib import Path
-from fastapi import APIRouter, Depends, File, Query, UploadFile, status
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Query, UploadFile, status
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
 
+from app.agent.review import run_review_decision
 from app.config import settings
-from app.db import get_session
+from app.db import engine, get_session
 from app.models import Attempt, utc_now
 from app.schemas import APIError, APIResponse
 from app.video.frames import extract_frames
@@ -15,12 +16,28 @@ from app.video.meta import extract_metadata
 router = APIRouter(tags=["video"])
 
 
+def process_video_analysis_task(attempt_id: str) -> None:
+    """
+    Background worker task to run AI video frame analysis and review decision.
+    Executes in a dedicated DB session to avoid session detachment after HTTP response ends.
+    Uses app dependency override if registered (for isolated test DB) or default get_session.
+    """
+    from app.main import app
+    session_generator = app.dependency_overrides.get(get_session, get_session)
+    for session in session_generator():
+        attempt = session.exec(select(Attempt).where(Attempt.id == attempt_id)).first()
+        if attempt:
+            run_review_decision(attempt=attempt, db=session)
+        break
+
+
 @router.post(
     "/attempts/{attempt_id}/video",
     response_model=APIResponse[dict],
 )
 async def upload_attempt_video(
     attempt_id: str,
+    background_tasks: BackgroundTasks,
     source: str = Query("live", description="'live' or 'upload'"),
     file: UploadFile = File(...),
     db: Session = Depends(get_session),
@@ -199,6 +216,9 @@ async def upload_attempt_video(
         db.add(attempt)
         db.commit()
         db.refresh(attempt)
+
+        # 8. Schedule asynchronous AI analysis via FastAPI BackgroundTasks
+        background_tasks.add_task(process_video_analysis_task, attempt.id)
 
         return APIResponse[dict](
             ok=True,

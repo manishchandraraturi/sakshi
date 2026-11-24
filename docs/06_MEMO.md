@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 10 / T10.2** |
-| Last PASS | **T10.1** |
+| Current phase / task | **Phase 11 / T11.1-T11.2** |
+| Last PASS | **T10.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T11.1-T11.2 — PASS
+- Done: Architecture upgrade for production — 1) Asynchronous video processing: Moved AI video analysis to FastAPI BackgroundTasks (`POST /api/attempts/{id}/video` immediately returns `status: "analyzing"`, and task runs isolated in background without timing out client HTTP requests). 2) Non-blocking attempt read: Removed synchronous analysis from `GET /api/attempts/{id}` so it acts strictly as a read-only DB query. 3) PWA transformation: Installed `vite-plugin-pwa`, configured standalone webmanifest, theme-color meta tag (#0A0A0A), and offline workbox service worker precaching. Added comprehensive async processing tests in `backend/tests/test_async_processing.py`.
+- Files: backend/app/routers/video.py, backend/app/routers/attempts.py, backend/tests/test_async_processing.py, backend/tests/test_review.py, backend/tests/test_video.py, frontend/vite.config.ts, frontend/index.html, frontend/package.json, frontend/package-lock.json, docs/06_MEMO.md
+- Tests: pytest -q -> 106 passed in 20.08s; npm run build -> success (PWA service worker + 30 precache entries generated).
+- Next: Final demo rehearsal / evaluation.
 
 ### 2026-11-24 — Task T10.2 — PASS
 - Done: Added conditional DEMO MODE orange pill badge on Landing page alongside backend status tag when health check reports demo_mode: true, communicating offline cache state to judges for 100% uptime assurance.

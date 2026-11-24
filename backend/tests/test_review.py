@@ -172,8 +172,8 @@ def test_review_decision_reject_on_fraud_flags():
         assert attempt.decision == "reject"
 
 
-# --- 3. GET /api/attempts/{id} Synchronous Trigger Integration Test ---
-def test_get_attempt_triggers_review_decision():
+# --- 3. GET /api/attempts/{id} Non-Blocking Integration Test ---
+def test_get_attempt_does_not_block_synchronously():
     with Session(test_engine) as session:
         worker = session.exec(select(Worker)).first()
         attempt = create_attempt(worker_id=worker.id, skill_id="electrician_socket", db=session)
@@ -189,10 +189,7 @@ def test_get_attempt_triggers_review_decision():
     assert body["ok"] is True
     data = body["data"]
 
-    # Status has updated to reviewed, and decision + steps are populated
-    assert data["status"] == "reviewed"
-    assert data["decision"] in ("accept", "needs_rerecord", "reject")
-    assert isinstance(data["steps"], list)
-    assert len(data["steps"]) > 0
+    # Status remains analyzing without blocking
+    assert data["status"] == "analyzing"
+    assert data["decision"] is None
     assert "agent_log" in data
-    assert len(data["agent_log"]) > 0
