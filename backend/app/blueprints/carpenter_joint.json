@@ -1,0 +1,75 @@
+{
+  "skill_id": "carpenter_joint",
+  "trade": "Carpenter",
+  "name": "Mortise and tenon wood joint construction",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Measure workpiece dimensions accurately (measure twice)",
+      "visual_criteria": "Steel rule or tape measure used to measure workpiece lengths; dimensions checked twice against design drawing",
+      "critical": false,
+      "safety_critical": false
+    },
+    {
+      "id": "step_2",
+      "title": "Mark shoulder cut lines and tenon layout",
+      "visual_criteria": "Try square and marking knife used to scribe crisp, perpendicular reference lines around all four faces",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_3",
+      "title": "Tenon shoulder and cheek handsaw cut",
+      "visual_criteria": "Workpiece clamped firmly in bench vise; tenon saw cuts along waste side of line with clean perpendicular kerf",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_4",
+      "title": "Chisel mortise cavity and clean cheeks",
+      "visual_criteria": "Mortise chisel held vertical, bevel inward; mortise cavity chopped to uniform depth with flat floor and clean walls",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_5",
+      "title": "Dry fit and apply wood glue assembly",
+      "visual_criteria": "Joint test-fitted square (90 degrees); wood glue applied evenly to tenon cheeks and mortise walls, clamped tight",
+      "critical": false,
+      "safety_critical": false
+    }
+  ],
+  "safety_items": ["step_3", "step_4"],
+  "scenario_questions": [
+    {
+      "id": "q1",
+      "text": "Why must you always cut on the waste side of the marked reference line when sawing a tenon?",
+      "expected_points": [
+        "Accounts for the width of the saw kerf (blade thickness)",
+        "Prevents the tenon from becoming loose or undersized"
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "What hand safety rule must you always observe when using sharp bench chisels?",
+      "expected_points": [
+        "Keep both hands behind the cutting edge at all times",
+        "Clamp the workpiece securely to the bench instead of holding it with one hand"
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "How do you verify that a mortise and tenon joint is square before the adhesive sets?",
+      "expected_points": [
+        "Use an engineer or try square on internal corners",
+        "Check diagonal cross-measurements for equality"
+      ]
+    }
+  ],
+  "common_mistakes": [
+    "Cutting on the line instead of the waste side resulting in loose fit",
+    "Chiseling toward oneself or holding workpiece by hand in front of chisel",
+    "Uneven mortise depth preventing full shoulder seating",
+    "Applying adhesive before dry-fitting the assembly"
+  ]
+}

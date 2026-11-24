@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 12 / T12.2** |
-| Last PASS | **T12.1** |
+| Current phase / task | **Phase 13 / T13.1** |
+| Last PASS | **T12.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T13.1 — PASS
+- Done: In-memory Rate Limiting & Scalability Blueprints — 1) Implemented thread-safe sliding-window InMemoryRateLimiter in backend/app/utils/rate_limiter.py with RateLimitExceeded exception returning HTTP 429 and standard API error envelope. Applied limiter dependencies to worker signup (max 5/min) and witness vouching (max 10/min). 2) Created welder_pipe.json (Welder trade, 5 steps: Safety gear, Metal prep, Tacking, Full weld, Slag removal) and carpenter_joint.json (Carpenter trade, 5 steps: Measure twice, Mark line, Saw cut, Chisel mortise, Apply wood glue) following the blueprint schema with safety_critical items and scenario questions. 3) Updated skills router to dynamically load all available blueprints so the frontend accordion automatically renders all 5 vocational trades. 4) Created test_rate_limit.py verifying 6th worker request returns 429 and rate limiter sliding window.
+- Files: backend/app/utils/rate_limiter.py, backend/app/main.py, backend/app/routers/workers.py, backend/app/routers/witness.py, backend/app/routers/skills.py, backend/app/ai/mock.py, backend/app/blueprints/welder_pipe.json, backend/app/blueprints/carpenter_joint.json, backend/tests/test_rate_limit.py, backend/tests/test_routers.py, backend/tests/conftest.py, docs/06_MEMO.md
+- Tests: pytest -q -> 112 passed in 21.57s; npm run build -> success (PWA service worker + 33 precache entries generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T12.2 — PASS
 - Done: Test suite timeout fix and Dashboard UI polish — 1) Created backend/tests/conftest.py with autouse fixture enforcing settings.DEMO_MODE=True and monkeypatching get_default_ai to return MockAI across agent modules. Updated FallbackAI and loop.py to bypass Gemini live calls during testing, reducing test suite execution time from 44 minutes down to 21 seconds (109 passed). 2) Polished Dashboard UI into a verified worker profile with a large Tier badge (Seal component), interactive Share Profile button (clipboard copy of /c/{id} with toast feedback), animated Skill Ladder progression bar (Tier 1->3 percentage), and recent activity feed displaying AI coaching summary and next actions.

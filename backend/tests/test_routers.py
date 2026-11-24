@@ -38,9 +38,9 @@ def test_get_skills():
     assert body["ok"] is True
     assert body["error"] is None
     data = body["data"]
-    assert len(data) == 3
+    assert len(data) == 5
     trades = {item["trade"] for item in data}
-    assert trades == {"Electrician", "Plumber", "Mason"}
+    assert trades == {"Electrician", "Plumber", "Mason", "Welder", "Carpenter"}
 
     # Verify first skill has steps
     first_skill = data[0]["skills"][0]

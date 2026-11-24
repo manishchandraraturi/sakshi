@@ -22,3 +22,7 @@ def force_test_mode(monkeypatch):
     monkeypatch.setattr(app.agent.loop, "get_default_ai", lambda: mock_instance)
     monkeypatch.setattr(app.agent.review, "get_default_ai", lambda: mock_instance)
     monkeypatch.setattr(app.agent.coach, "get_default_ai", lambda: mock_instance)
+
+    from app.utils.rate_limiter import witness_vouch_limiter, worker_signup_limiter
+    worker_signup_limiter.reset()
+    witness_vouch_limiter.reset()

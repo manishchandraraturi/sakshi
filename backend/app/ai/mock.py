@@ -38,6 +38,23 @@ RECOGNIZED_KEYWORDS = {
     "spirit level",
     "plumb",
     "level",
+    # Welder
+    "welder",
+    "welder_pipe",
+    "weld",
+    "slag",
+    "tack",
+    "arc",
+    "bevel",
+    # Carpenter
+    "carpenter",
+    "carpenter_joint",
+    "wood",
+    "tenon",
+    "mortise",
+    "chisel",
+    "handsaw",
+    "glue",
     # Generic blueprint / prompt criteria
     "blueprint",
     "visual criteria",

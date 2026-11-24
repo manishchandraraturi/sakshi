@@ -1,0 +1,77 @@
+{
+  "skill_id": "welder_pipe",
+  "trade": "Welder",
+  "name": "Pipe joint beveling, tacking and circumferential weld",
+  "steps": [
+    {
+      "id": "step_1",
+      "title": "Safety gear and welding PPE inspection",
+      "visual_criteria": "Auto-darkening welding helmet, leather gloves, flame-resistant jacket, and safety boots properly worn",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_2",
+      "title": "Metal pipe preparation and edge beveling",
+      "visual_criteria": "Pipe ends cleaned of rust, paint, and oil using wire brush; uniform 30-35 degree bevel angle created",
+      "critical": false,
+      "safety_critical": false
+    },
+    {
+      "id": "step_3",
+      "title": "Pipe alignment and bridge tack welding",
+      "visual_criteria": "Root gap set to 2-3mm with spacer; 3 to 4 uniform bridge tack welds placed at 90-degree intervals",
+      "critical": true,
+      "safety_critical": false
+    },
+    {
+      "id": "step_4",
+      "title": "Full circumferential pass weld execution",
+      "visual_criteria": "Smooth, continuous root and fill pass with uniform bead width, proper penetration, and no burn-through",
+      "critical": true,
+      "safety_critical": true
+    },
+    {
+      "id": "step_5",
+      "title": "Slag removal and joint inspection",
+      "visual_criteria": "Slag completely chipped off with chipping hammer and wire-brushed clean; no visible porosity or undercut",
+      "critical": false,
+      "safety_critical": false
+    }
+  ],
+  "safety_items": ["step_1", "step_4"],
+  "scenario_questions": [
+    {
+      "id": "q1",
+      "text": "What essential personal protective equipment must be verified before striking an electric arc?",
+      "expected_points": [
+        "Welding helmet with correct shade lens and safety glasses underneath",
+        "Dry leather welding gloves and fire-resistant leather apron or jacket",
+        "Steel-toe safety boots"
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Why is thorough slag removal and cleaning required between successive weld passes?",
+      "expected_points": [
+        "Prevents slag inclusions and internal porosity in the weld deposit",
+        "Ensures complete fusion between successive passes"
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "What fire prevention checks must be conducted in the immediate welding area before commencing work?",
+      "expected_points": [
+        "Remove all flammable and combustible materials within at least 10 meters",
+        "Keep a certified fire extinguisher within immediate reach",
+        "Ensure adequate ventilation or fume extraction"
+      ]
+    }
+  ],
+  "common_mistakes": [
+    "Welding without proper eye and skin UV protection",
+    "Inadequate root opening causing lack of root penetration",
+    "Failing to clean slag before the subsequent weld pass causing inclusions",
+    "Incorrect arc length causing excessive spatter and undercut"
+  ]
+}

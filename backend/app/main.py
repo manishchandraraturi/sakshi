@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlmodel import SQLModel
@@ -8,6 +8,7 @@ from app.config import settings
 from app.db import engine
 from app.routers import attempts, credentials, directory, interview, skills, video, witness, workers
 from app.schemas import APIError, APIResponse
+from app.utils.rate_limiter import RateLimitExceeded
 import app.models  # noqa: F401 - ensure all tables are registered in SQLModel.metadata
 
 
@@ -32,6 +33,25 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_exception_handler(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    error_payload = APIResponse[None](
+        ok=False,
+        data=None,
+        error=APIError(
+            code="RATE_LIMIT",
+            message=exc.detail,
+            hint=f"Please try again in {exc.retry_after} seconds." if exc.retry_after else None,
+        ),
+    )
+    headers = {"Retry-After": str(exc.retry_after)} if exc.retry_after else {}
+    return JSONResponse(
+        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+        content=error_payload.model_dump(),
+        headers=headers,
+    )
 
 
 @app.exception_handler(Exception)

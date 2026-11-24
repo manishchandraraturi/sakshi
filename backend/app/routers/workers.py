@@ -8,11 +8,16 @@ from sqlmodel import Session, select
 from app.db import get_session
 from app.models import Attempt, AuditLog, Credential, Worker, utc_now
 from app.schemas import APIError, APIResponse, WorkerCreate, WorkerResponse
+from app.utils.rate_limiter import worker_signup_limiter
 
 router = APIRouter(tags=["workers"])
 
 
-@router.post("/workers", response_model=APIResponse[WorkerResponse])
+@router.post(
+    "/workers",
+    response_model=APIResponse[WorkerResponse],
+    dependencies=[Depends(worker_signup_limiter.check)],
+)
 def create_worker(
     payload: WorkerCreate,
     db: Session = Depends(get_session),

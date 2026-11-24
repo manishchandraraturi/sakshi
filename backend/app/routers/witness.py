@@ -21,6 +21,7 @@ from app.schemas import (
     WitnessPageData,
 )
 from app.services import witness_service
+from app.utils.rate_limiter import witness_vouch_limiter
 
 router = APIRouter(tags=["witnesses"])
 
@@ -154,6 +155,7 @@ def get_witness_page(
 @router.post(
     "/w/{token}/vouch",
     response_model=APIResponse[VouchResponse],
+    dependencies=[Depends(witness_vouch_limiter.check)],
 )
 def submit_vouch(
     token: str,
