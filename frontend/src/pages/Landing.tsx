@@ -29,15 +29,26 @@ export default function Landing() {
   return (
     <PageTransition className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
       <div className="max-w-2xl mx-auto space-y-8">
-        <Tag>
-          {loading ? (
-            'BACKEND: checking...'
-          ) : error || !health ? (
-            'BACKEND: offline'
-          ) : (
-            `BACKEND: ${health.status} / demo_mode: ${health.demo_mode}`
+        <div className="inline-flex items-center justify-center gap-2 flex-wrap">
+          <Tag variant={error ? 'danger' : 'default'}>
+            {loading ? (
+              'BACKEND: checking...'
+            ) : error || !health ? (
+              'BACKEND: offline'
+            ) : (
+              `BACKEND: ${health.status.toUpperCase()}`
+            )}
+          </Tag>
+          {health?.demo_mode && (
+            <Tag
+              variant="accent"
+              className="font-bold border-accent/60 bg-accent/15 text-accent shadow-sm animate-pulse"
+              title="Cached offline AI responses active for guaranteed 100% demo uptime"
+            >
+              DEMO MODE
+            </Tag>
           )}
-        </Tag>
+        </div>
 
         <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-extrabold tracking-tight text-ink leading-[0.92]">
           Skills, witnessed<span className="text-accent">.</span>

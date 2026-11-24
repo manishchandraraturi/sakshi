@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 10 / T10.1** |
-| Last PASS | **Phase 10 Audit & Fixes** |
+| Current phase / task | **Phase 10 / T10.2** |
+| Last PASS | **T10.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T10.2 — PASS
+- Done: Added conditional DEMO MODE orange pill badge on Landing page alongside backend status tag when health check reports demo_mode: true, communicating offline cache state to judges for 100% uptime assurance.
+- Files: frontend/src/pages/Landing.tsx, docs/06_MEMO.md
+- Tests: npm run build -> success.
+- Next: Live pitch demonstration.
 
 ### 2026-11-24 — Task T10.1 — PASS
 - Done: Production hardening — implemented React lazy loading and Suspense code splitting (splitting bundle from >500kB down to 34kB index + vendor chunks, completely resolving Vite chunk warning); added resilient camera access denied / unavailable fallback UI in Record page and useRecorder hook with highlighted file upload; fortified google-genai integration with try/except logging and automatic FallbackAI fallback to MockAI on quota (429) or network errors.
