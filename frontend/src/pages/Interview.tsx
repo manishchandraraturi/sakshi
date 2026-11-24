@@ -18,7 +18,9 @@ import { Tag } from '../components/ui/Tag'
 import { Skeleton } from '../components/ui/Skeleton'
 import { AgentLog } from '../components/AgentLog'
 import { PageTransition } from '../components/PageTransition'
+import { OfflineBanner } from '../components/OfflineBanner'
 import { useSpeech } from '../hooks/useSpeech'
+import { useNetworkStatus } from '../hooks/useNetworkStatus'
 import { useSessionStore } from '../store/session'
 
 interface ChatMessage {
@@ -31,7 +33,13 @@ interface ChatMessage {
 export default function Interview() {
   const { attemptId } = useParams<{ attemptId: string }>()
   const navigate = useNavigate()
-  const { language } = useSessionStore()
+  const isOnline = useNetworkStatus()
+  const {
+    language,
+    cachedInterviewState,
+    setCachedInterviewState,
+    clearCachedInterviewState,
+  } = useSessionStore()
 
   const {
     startListening,
@@ -67,10 +75,35 @@ export default function Interview() {
     }
   }, [transcript])
 
-  // 1. Fetch first question on mount
+  // Sync state to local Zustand cache
+  useEffect(() => {
+    if (attemptId && messages.length > 0) {
+      setCachedInterviewState({
+        attemptId,
+        messages,
+        currentQuestion: messages[messages.length - 1]?.text || null,
+        progress,
+        lastUpdated: Date.now(),
+      })
+    }
+  }, [attemptId, messages, progress, setCachedInterviewState])
+
+  // 1. Fetch first question on mount or restore from cache
   useEffect(() => {
     if (!attemptId) {
       setError('Missing attempt ID in URL')
+      setLoadingInitial(false)
+      return
+    }
+
+    // Restore from local cache if matches attempt
+    if (
+      cachedInterviewState &&
+      cachedInterviewState.attemptId === attemptId &&
+      cachedInterviewState.messages.length > 0
+    ) {
+      setMessages(cachedInterviewState.messages)
+      setProgress(cachedInterviewState.progress)
       setLoadingInitial(false)
       return
     }
@@ -103,6 +136,7 @@ export default function Interview() {
             setMessages([firstMsg])
             speak(res.data.question)
           } else if (res.data.done) {
+            clearCachedInterviewState()
             navigate(`/record/${attemptId}`)
           }
         }
@@ -120,12 +154,17 @@ export default function Interview() {
     return () => {
       isMounted = false
     }
-  }, [attemptId, navigate, speak])
+  }, [attemptId, cachedInterviewState, clearCachedInterviewState, navigate, speak])
 
   // 2. Submit user answer
   const handleSend = async () => {
     const trimmed = inputText.trim()
     if (!trimmed || evaluating || !attemptId) return
+
+    if (!isOnline) {
+      setError('You are offline. Your answers are saved locally and will sync when you reconnect.')
+      return
+    }
 
     // Stop listening if mic was running
     if (isListening) {
@@ -169,6 +208,7 @@ export default function Interview() {
         setProgress(res.data.progress)
 
         if (res.data.done) {
+          clearCachedInterviewState()
           setAgentLogs((prev) => [
             ...prev,
             'All scenario questions verified.',
@@ -205,8 +245,22 @@ export default function Interview() {
         }
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Error submitting answer'
+      const isNetErr =
+        !navigator.onLine ||
+        (err instanceof Error &&
+          (err.message.toLowerCase().includes('fetch') ||
+            err.message.toLowerCase().includes('network') ||
+            err.message.toLowerCase().includes('failed to fetch')))
+      const msg = isNetErr
+        ? 'Network lost. Please wait...'
+        : err instanceof Error
+        ? err.message
+        : 'Error submitting answer'
       setError(msg)
+      // Keep typed answer in input box so it is not lost
+      setInputText(trimmed)
+      // Remove optimistic message that failed to send
+      setMessages((prev) => prev.filter((m) => m.id !== userMsg.id))
       setAgentLogs([])
     } finally {
       setEvaluating(false)
@@ -269,6 +323,9 @@ export default function Interview() {
             </span>
           </div>
         </header>
+
+        {/* Offline Network Notification */}
+        <OfflineBanner className="mb-4" />
 
         {/* Chat Stream Area */}
         <main className="flex-1 overflow-y-auto space-y-4 pr-1 mb-4">

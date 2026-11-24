@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 13 / T13.1** |
-| Last PASS | **T12.2** |
+| Current phase / task | **Phase 14 / T14.1** |
+| Last PASS | **T13.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T14.1 — PASS
+- Done: Network resilience and offline interview caching — 1) Created useNetworkStatus hook listening to browser online/offline events. 2) Built animated OfflineBanner notifying workers of local answer preservation when offline. 3) Updated session store with Zustand persist middleware, storing cachedInterviewState across reloads and tab restarts. 4) Enhanced Interview page to restore chat history from local cache on mount, sync progress on every interaction, guard against offline sends, and preserve user's typed response in input on network failure.
+- Files: frontend/src/hooks/useNetworkStatus.ts, frontend/src/components/OfflineBanner.tsx, frontend/src/store/session.ts, frontend/src/pages/Interview.tsx, docs/06_MEMO.md
+- Tests: npm run build -> success (built in 19.21s, PWA precache generated); pytest -q -> 112 passed in 21.57s.
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T13.1 — PASS
 - Done: In-memory Rate Limiting & Scalability Blueprints — 1) Implemented thread-safe sliding-window InMemoryRateLimiter in backend/app/utils/rate_limiter.py with RateLimitExceeded exception returning HTTP 429 and standard API error envelope. Applied limiter dependencies to worker signup (max 5/min) and witness vouching (max 10/min). 2) Created welder_pipe.json (Welder trade, 5 steps: Safety gear, Metal prep, Tacking, Full weld, Slag removal) and carpenter_joint.json (Carpenter trade, 5 steps: Measure twice, Mark line, Saw cut, Chisel mortise, Apply wood glue) following the blueprint schema with safety_critical items and scenario questions. 3) Updated skills router to dynamically load all available blueprints so the frontend accordion automatically renders all 5 vocational trades. 4) Created test_rate_limit.py verifying 6th worker request returns 429 and rate limiter sliding window.
