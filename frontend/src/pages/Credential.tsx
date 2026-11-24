@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import confetti from 'canvas-confetti'
+import { useToast } from '../hooks/useToast'
 import {
   Award,
   ShieldCheck,
@@ -46,6 +48,7 @@ interface CredentialData {
 export default function Credential() {
   const { id } = useParams<{ id: string }>()
 
+  const { success } = useToast()
   const [cred, setCred] = useState<CredentialData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -63,6 +66,25 @@ export default function Credential() {
         const res = await fetchApi<CredentialData>(`/api/credentials/${id}`)
         if (isMounted && res.data) {
           setCred(res.data)
+          // Fire celebratory confetti burst from the bottom corners
+          try {
+            confetti({
+              particleCount: 50,
+              angle: 60,
+              spread: 55,
+              origin: { x: 0, y: 0.85 },
+              colors: ['#FF5500', '#0A0A0A', '#F6F3EC', '#FFB800'],
+            })
+            confetti({
+              particleCount: 50,
+              angle: 120,
+              spread: 55,
+              origin: { x: 1, y: 0.85 },
+              colors: ['#FF5500', '#0A0A0A', '#F6F3EC', '#FFB800'],
+            })
+          } catch {
+            // gracefully ignore if canvas not supported
+          }
         }
       } catch (err: any) {
         if (isMounted) {
@@ -84,6 +106,7 @@ export default function Credential() {
     if (!id) return
     navigator.clipboard.writeText(id)
     setCopied(true)
+    success('Credential ID copied to clipboard!')
     setTimeout(() => setCopied(false), 2000)
   }
 

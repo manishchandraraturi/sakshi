@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 16 / T16.1** |
-| Last PASS | **T16.1** |
+| Current phase / task | **Phase 17 / T17.1** |
+| Last PASS | **T17.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T17.1 — PASS
+- Done: Final UI Delight & Toast System — 1) Created lightweight Zustand UI store in `frontend/src/store/ui.ts` managing global toast notifications with auto-dismiss timers. 2) Created `frontend/src/hooks/useToast.ts` with helper methods for info, success, error, and warning toasts. 3) Built `frontend/src/components/ui/Toast.tsx` featuring an ink-black pill with paper-white text, status icon, Framer Motion entry/exit transitions, and mounted it in `AppLayout` for global coverage. 4) Added `canvas-confetti` and `@types/canvas-confetti`, firing dual corner bursts of orange, ink, and gold confetti on successful credential load in `Credential.tsx`, plus a toast alert on ID copy. 5) Designed a live audio-wave visualizer in `Interview.tsx` with 3 dynamic vertical bouncing bars and pulsing halo indicator when the microphone is active.
+- Files: frontend/package.json, frontend/src/store/ui.ts, frontend/src/hooks/useToast.ts, frontend/src/components/ui/Toast.tsx, frontend/src/App.tsx, frontend/src/pages/Credential.tsx, frontend/src/pages/Interview.tsx, docs/06_MEMO.md
+- Tests: npm run build -> success (built cleanly, PWA precache generated).
+- Next: Final demo pitch presentation.
 
 ### 2026-11-24 — Task T16.1 — PASS
 - Done: Containerization and CI/CD — 1) Created `backend/Dockerfile` using `python:3.11-slim`, installing ffmpeg, libgl1, and libglib2.0-0 for OpenCV, and setting up persistent `/app/data` and `/app/keys` volumes. 2) Created `frontend/Dockerfile` using multi-stage build (`node:20-alpine` build stage + `nginx:alpine` production stage). 3) Created `frontend/nginx.conf` with SPA routing (`try_files $uri $uri/ /index.html`), API reverse proxy to `http://backend:8000`, asset caching, and PWA non-cache headers. 4) Created `docker-compose.yml` linking backend (8000:8000) and frontend (5173:80) with DEMO_MODE, CORS, and volume persistence. 5) Created `.dockerignore` ignoring node_modules, .venv, dist, __pycache__, and git artifacts. 6) Created `.github/workflows/ci.yml` defining automated backend pytest and frontend build CI jobs on GitHub Actions. 7) Added Docker instructions to README.md.

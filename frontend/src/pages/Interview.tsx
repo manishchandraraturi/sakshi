@@ -424,7 +424,23 @@ export default function Interview() {
               className="mb-2 px-3 py-2 rounded-lg bg-orange/10 border border-orange/30 flex items-center justify-between text-xs font-mono text-orange"
             >
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-orange animate-ping" />
+                <span className="flex items-center gap-0.5 h-3.5">
+                  <motion.span
+                    className="w-1 bg-orange rounded-full"
+                    animate={{ height: ['4px', '14px', '4px'] }}
+                    transition={{ repeat: Infinity, duration: 0.5, ease: 'easeInOut' }}
+                  />
+                  <motion.span
+                    className="w-1 bg-orange rounded-full"
+                    animate={{ height: ['8px', '16px', '6px'] }}
+                    transition={{ repeat: Infinity, duration: 0.4, delay: 0.1, ease: 'easeInOut' }}
+                  />
+                  <motion.span
+                    className="w-1 bg-orange rounded-full"
+                    animate={{ height: ['3px', '12px', '3px'] }}
+                    transition={{ repeat: Infinity, duration: 0.6, delay: 0.2, ease: 'easeInOut' }}
+                  />
+                </span>
                 <span>Listening... Speak clearly in your selected language</span>
               </div>
               <span className="text-[10px] text-orange/70">Click mic or send when done</span>
@@ -432,7 +448,7 @@ export default function Interview() {
           )}
 
           <div className="flex items-center gap-2">
-            {/* Big Mic Button */}
+            {/* Big Mic Button with Audio Wave Visualizer */}
             {speechSupported ? (
               <button
                 type="button"
@@ -440,13 +456,34 @@ export default function Interview() {
                 disabled={evaluating}
                 className={`relative w-12 h-12 rounded-full flex items-center justify-center transition-all shrink-0 ${
                   isListening
-                    ? 'bg-orange text-paper ring-4 ring-orange/30 shadow-lg'
+                    ? 'bg-orange text-paper shadow-lg shadow-orange/30'
                     : 'bg-ink/5 border border-ink/20 text-ink hover:bg-ink/10'
                 } ${evaluating ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={isListening ? 'Stop listening' : 'Start speaking'}
               >
+                {/* Pulsing ring during recording */}
+                {isListening && (
+                  <span className="absolute -inset-1 rounded-full border-2 border-orange animate-ping opacity-60 pointer-events-none" />
+                )}
+
                 {isListening ? (
-                  <MicOff className="w-5 h-5 animate-pulse" />
+                  <div className="flex items-center justify-center gap-1 h-5 w-5">
+                    <motion.span
+                      className="w-1 bg-paper rounded-full"
+                      animate={{ height: ['6px', '18px', '6px'] }}
+                      transition={{ repeat: Infinity, duration: 0.55, ease: 'easeInOut' }}
+                    />
+                    <motion.span
+                      className="w-1 bg-paper rounded-full"
+                      animate={{ height: ['10px', '22px', '8px', '18px'] }}
+                      transition={{ repeat: Infinity, duration: 0.45, ease: 'easeInOut', delay: 0.1 }}
+                    />
+                    <motion.span
+                      className="w-1 bg-paper rounded-full"
+                      animate={{ height: ['4px', '16px', '4px'] }}
+                      transition={{ repeat: Infinity, duration: 0.65, ease: 'easeInOut', delay: 0.2 }}
+                    />
+                  </div>
                 ) : (
                   <Mic className="w-5 h-5" />
                 )}

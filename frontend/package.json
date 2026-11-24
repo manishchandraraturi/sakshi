@@ -16,6 +16,7 @@
     "@fontsource/noto-sans-kannada": "^5.2.5",
     "@fontsource/space-grotesk": "^5.2.5",
     "@fontsource/syne": "^5.2.5",
+    "canvas-confetti": "^1.9.4",
     "framer-motion": "^12.4.7",
     "jsqr": "^1.4.0",
     "lucide-react": "^0.475.0",
@@ -28,6 +29,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@types/canvas-confetti": "^1.9.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
