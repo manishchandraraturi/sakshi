@@ -11,6 +11,7 @@ import {
   Lightbulb,
   Trash2,
   AlertCircle,
+  Target,
 } from 'lucide-react'
 import { fetchApi } from '../api/client'
 import PageTransition from '../components/PageTransition'
@@ -214,6 +215,59 @@ export default function Dashboard() {
               </Link>
             </div>
           </Card>
+
+          {/* AI Coach Summary for Most Recent Attempt */}
+          {activeAttempt?.coaching?.summary && (
+            <Card className="p-5 bg-orange/5 border border-orange/30 shadow-sm space-y-3.5">
+              <div className="flex items-center justify-between border-b border-orange/15 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-orange/15 flex items-center justify-center text-orange border border-orange/30">
+                    <Lightbulb className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading font-bold text-sm text-ink">
+                      AI Coach: Recent Attempt Feedback
+                    </h3>
+                    <p className="font-sans text-[11px] text-ink/60">
+                      {(activeAttempt.skill_id || 'Trade Assessment').replace(/_/g, ' ').toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+                <Tag variant="accent" className="text-[9px] py-0 px-2">
+                  Active Feedback
+                </Tag>
+              </div>
+
+              <div className="p-3 bg-white/80 rounded-xl border border-orange/15 text-xs text-ink/80 font-sans leading-relaxed">
+                <p className="font-semibold text-ink mb-1 text-[11px] uppercase font-mono tracking-wider text-orange">
+                  Summary:
+                </p>
+                <p>{activeAttempt.coaching.summary}</p>
+              </div>
+
+              {activeAttempt.coaching.next_actions && activeAttempt.coaching.next_actions.length > 0 && (
+                <div className="space-y-1.5 pt-1">
+                  <span className="font-mono text-[11px] font-bold text-ink/70 uppercase tracking-wider flex items-center gap-1.5">
+                    <Target className="w-3.5 h-3.5 text-orange" />
+                    Recommended Next Actions:
+                  </span>
+                  <div className="space-y-1">
+                    {activeAttempt.coaching.next_actions.map((act: string, idx: number) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-2 text-xs text-ink/80 bg-white/70 p-2 rounded-lg border border-orange/10"
+                      >
+                        <span className="w-3.5 h-3.5 rounded-full bg-orange/15 text-orange font-mono text-[9px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <span className="font-sans leading-tight">{act}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Card>
+          )}
 
           {/* Skill Ladder Progress (PRD Section 4 & 6) */}
           <div className="space-y-3">

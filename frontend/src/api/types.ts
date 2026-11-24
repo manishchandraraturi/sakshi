@@ -41,6 +41,17 @@ export interface StepResult {
   safety_critical?: boolean;
 }
 
+export interface UnclearStepTip {
+  step_id: string;
+  tip: string;
+}
+
+export interface CoachResult {
+  summary: string;
+  next_actions: string[];
+  unclear_steps_tips: UnclearStepTip[];
+}
+
 export interface AttemptResponse {
   id?: string;
   worker_id?: string;
@@ -53,6 +64,7 @@ export interface AttemptResponse {
   steps: StepResult[];
   fraud_flags: Array<{ code: string; severity?: string; detail: string }>;
   agent_log: string[];
+  coaching?: CoachResult | null;
 }
 
 export interface WitnessInvite {

@@ -40,6 +40,7 @@ class Attempt(SQLModel, table=True):
     fraud_flags_json: Optional[str] = None
     video_score: Optional[float] = None
     decision: Optional[str] = None
+    coaching_json: Optional[str] = None
     created_at: datetime = Field(default_factory=utc_now)
     updated_at: datetime = Field(default_factory=utc_now)
 

@@ -23,6 +23,14 @@ engine = create_engine(
 
 def create_db_and_tables() -> None:
     SQLModel.metadata.create_all(engine)
+    # Ensure coaching_json column exists in legacy databases
+    try:
+        from sqlmodel import text
+        with engine.connect() as conn:
+            conn.execute(text("ALTER TABLE attempts ADD COLUMN coaching_json TEXT"))
+            conn.commit()
+    except Exception:
+        pass
 
 
 def get_session():

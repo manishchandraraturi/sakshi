@@ -97,3 +97,70 @@ def build_interviewer_user_prompt(
         "Otherwise, if answer is complete or max follow-ups reached, set next.type='question' or 'done'. "
         "Output ONLY valid JSON matching the schema."
     )
+
+
+# --- Prompt 3: Coach / Explainer (03_RULES.md) ---
+COACH_SYSTEM_PROMPT = (
+    "You explain a credential result to a worker in {language}, short and encouraging. "
+    "Input: tier, trust breakdown, failed/unclear steps, witness status (computed by code, do not change). "
+    "Output ONLY JSON:\n"
+    '{{"summary":str,"next_actions":[str],"unclear_steps_tips":[{{"step_id":str,"tip":str}}]}}\n'
+    "Max 3 next_actions. Never promise a tier. Never change numbers."
+)
+
+
+def build_coach_system_prompt(language: str = "English") -> str:
+    """Build the system prompt for Prompt 3 (Coach/explainer)."""
+    return COACH_SYSTEM_PROMPT.format(language=language)
+
+
+def build_coach_user_prompt(
+    trade: str,
+    skill_name: str,
+    decision: str,
+    score: float,
+    failed_steps: List[Any],
+    witness_status: Optional[str] = None,
+    tier: int = 0,
+) -> str:
+    """Build the user prompt providing assessment context and failed steps to the coach agent."""
+    steps_formatted = []
+    for s in failed_steps:
+        s_id = getattr(s, "id", None) or (s.get("id") if isinstance(s, dict) else str(s))
+        s_title = getattr(s, "title", None) or (s.get("title") if isinstance(s, dict) else "")
+        s_verdict = getattr(s, "verdict", None) or (s.get("verdict") if isinstance(s, dict) else "unclear")
+        s_note = getattr(s, "note", None) or (s.get("note") if isinstance(s, dict) else "")
+        steps_formatted.append(
+            f"- Step ID: {s_id}\n"
+            f"  Title: {s_title}\n"
+            f"  Verdict: {s_verdict}\n"
+            f"  Note from Evaluator: {s_note}"
+        )
+
+    prompt = (
+        f"TRADE: {trade}\n"
+        f"SKILL: {skill_name}\n"
+        f"DECISION: {decision}\n"
+        f"PRACTICAL SCORE: {score:.1f}%\n"
+        f"CURRENT TIER: {tier}\n"
+        f"WITNESS STATUS: {witness_status or 'None recorded'}\n\n"
+    )
+
+    if steps_formatted:
+        prompt += (
+            "STEPS REQUIRING ATTENTION (FAILED OR UNCLEAR):\n"
+            + "\n\n".join(steps_formatted)
+            + "\n\n"
+        )
+    else:
+        prompt += "ALL DEMONSTRATION STEPS PASSED SUCCESSFULLY.\n\n"
+
+    prompt += (
+        "Provide a short and encouraging summary of the credential result for the worker. "
+        "Recommend at most 3 clear, actionable next steps. "
+        "For any failed or unclear steps listed above, provide a specific practical tip to help the worker succeed when re-recording. "
+        "Never promise a tier and never alter any scores or metrics. "
+        "Output ONLY valid JSON matching the schema."
+    )
+    return prompt
+

@@ -4,6 +4,7 @@ from typing import Any, List, Optional
 from fastapi import APIRouter, Depends, File, Form, Request, UploadFile, status
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
+from app.agent.coach import generate_coaching
 from app.agent.loop import get_default_ai
 from app.agent.prompts import ANALYZER_SYSTEM_PROMPT, build_analyzer_user_prompt
 from app.agent.review import run_review_decision
@@ -134,6 +135,13 @@ def get_attempt_by_id(
     decision = attempt.decision
     v_score = attempt.video_score
 
+    coaching = None
+    if attempt.coaching_json:
+        try:
+            coaching = json.loads(attempt.coaching_json)
+        except Exception:
+            coaching = None
+
     return APIResponse[dict](
         ok=True,
         data={
@@ -148,6 +156,7 @@ def get_attempt_by_id(
             "steps": steps,
             "fraud_flags": fraud_flags,
             "agent_log": agent_log,
+            "coaching": coaching,
         },
         error=None,
     )
@@ -377,6 +386,13 @@ async def rerecord_failed_steps(
     attempt.decision = decision
     attempt.status = "reviewed"
     attempt.updated_at = utc_now()
+
+    # Regenerate coaching feedback for updated attempt
+    try:
+        coaching_data = generate_coaching(attempt, blueprint, db=db)
+        attempt.coaching_json = json.dumps(coaching_data)
+    except Exception as e:
+        pass
 
     db.add(attempt)
     db.commit()

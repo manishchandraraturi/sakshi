@@ -11,6 +11,8 @@ import {
   Sparkles,
   AlertCircle,
   RefreshCw,
+  Lightbulb,
+  Target,
 } from 'lucide-react'
 import { fetchApi } from '../api/client'
 import type { AttemptResponse } from '../api/types'
@@ -277,6 +279,59 @@ export default function Review() {
               </div>
             )}
 
+            {/* AI Coach Card (Prompt 3) */}
+            {(isNeedsRerecord || isRejected || data.coaching) && data.coaching && (
+              <Card className="p-5 bg-orange/5 border border-orange/30 shadow-sm space-y-4">
+                <div className="flex items-center gap-2.5 border-b border-orange/15 pb-3">
+                  <div className="w-8 h-8 rounded-full bg-orange/10 flex items-center justify-center border border-orange/30 text-orange">
+                    <Lightbulb className="w-4 h-4 text-orange" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-heading font-bold text-sm text-ink">
+                        AI Coach & Feedback
+                      </h3>
+                      <Tag variant="accent" className="text-[9px] py-0 px-2">
+                        Guidance
+                      </Tag>
+                    </div>
+                    <p className="font-sans text-[11px] text-ink/60">
+                      Personalized guidance to improve your practical demonstration
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-white/90 rounded-xl border border-orange/15 text-xs text-ink/80 font-sans leading-relaxed">
+                  <p className="font-semibold text-ink mb-1 text-[11px] uppercase font-mono tracking-wider text-orange">
+                    Summary:
+                  </p>
+                  <p>{data.coaching.summary}</p>
+                </div>
+
+                {data.coaching.next_actions && data.coaching.next_actions.length > 0 && (
+                  <div className="space-y-2">
+                    <span className="font-mono text-[11px] font-bold text-ink/70 uppercase tracking-wider flex items-center gap-1.5">
+                      <Target className="w-3.5 h-3.5 text-orange" />
+                      Actionable Next Steps
+                    </span>
+                    <div className="space-y-1.5">
+                      {data.coaching.next_actions.map((action, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-2.5 text-xs text-ink/85 bg-white/80 p-2.5 rounded-lg border border-orange/10"
+                        >
+                          <span className="w-4 h-4 rounded-full bg-orange/15 text-orange font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <span className="font-sans leading-snug">{action}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </Card>
+            )}
+
             {/* Step-by-Step Breakdown */}
             <Card className="p-5 space-y-3">
               <div className="flex items-center justify-between border-b border-ink/10 pb-2">
@@ -289,7 +344,7 @@ export default function Review() {
                 </span>
               </div>
 
-              <StepList steps={data.steps} />
+              <StepList steps={data.steps} tips={data.coaching?.unclear_steps_tips} />
             </Card>
 
             {/* Agent Reasoning Log */}

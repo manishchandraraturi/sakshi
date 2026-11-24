@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 11 / T11.1-T11.2** |
-| Last PASS | **T10.2** |
+| Current phase / task | **Phase 12 / T12.1** |
+| Last PASS | **T11.1-T11.2** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-24 — Task T12.1 — PASS
+- Done: AI Coaching feature (Prompt 3 from 03_RULES.md) — 1) Added Prompt 3 (Coach/explainer system prompt and user prompt builder) in agent/prompts.py. 2) Implemented generate_coaching in agent/coach.py taking attempt analysis results and failed/unclear steps to produce summary, actionable next_actions, and per-step unclear_steps_tips, integrated into review.py decision pipeline and re-record handler. 3) Added coaching_json column to Attempt model and exposed coaching in GET /api/attempts/{id}. 4) Updated MockAI with dynamic Prompt 3 handling and added test_coaching.py. 5) Updated frontend types (CoachResult, UnclearStepTip), Review UI with prominent AI Coach Card and per-step tips in StepList, and Dashboard UI displaying active coaching guidance for the most recent assessment.
+- Files: backend/app/agent/prompts.py, backend/app/agent/coach.py, backend/app/agent/review.py, backend/app/routers/attempts.py, backend/app/models.py, backend/app/db.py, backend/app/ai/mock.py, backend/tests/test_coaching.py, frontend/src/api/types.ts, frontend/src/components/StepList.tsx, frontend/src/pages/Review.tsx, frontend/src/pages/Dashboard.tsx, docs/06_MEMO.md
+- Tests: pytest -q -> 109 passed; npm run build -> success (PWA service worker + 31 precache entries generated).
+- Next: Final demo rehearsal and evaluation.
 
 ### 2026-11-24 — Task T11.1-T11.2 — PASS
 - Done: Architecture upgrade for production — 1) Asynchronous video processing: Moved AI video analysis to FastAPI BackgroundTasks (`POST /api/attempts/{id}/video` immediately returns `status: "analyzing"`, and task runs isolated in background without timing out client HTTP requests). 2) Non-blocking attempt read: Removed synchronous analysis from `GET /api/attempts/{id}` so it acts strictly as a read-only DB query. 3) PWA transformation: Installed `vite-plugin-pwa`, configured standalone webmanifest, theme-color meta tag (#0A0A0A), and offline workbox service worker precaching. Added comprehensive async processing tests in `backend/tests/test_async_processing.py`.

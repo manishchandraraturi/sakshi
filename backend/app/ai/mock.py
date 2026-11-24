@@ -181,14 +181,33 @@ class MockAI(BaseAI):
                     }
                 )
 
+            extracted_unclear = re.findall(r"step[\s_]?id:\s*([a-zA-Z0-9_-]+)", prompt, re.IGNORECASE)
+            unclear_tips = [
+                {"step_id": sid, "tip": f"Ensure {sid} is clearly visible to the camera in good lighting."}
+                for sid in extracted_unclear
+            ]
+
+            summary = "Demonstrated solid technical execution in your practical assessment."
+            if "fail" in combined_text or "needs_rerecord" in combined_text or "reject" in combined_text or unclear_tips:
+                summary = "Some steps were unclear or require attention. Review the coaching tips below to improve."
+
+            actions = (
+                [
+                    "Re-record failed or unclear demonstration steps",
+                    "Review blueprint checklist before recording",
+                ]
+                if unclear_tips
+                else [
+                    "Request 2 peer witness verifications to advance to Tier 2",
+                    "Review tool handling best practices",
+                ]
+            )
+
             return json.dumps(
                 {
-                    "summary": "Demonstrated solid technical execution in your practical assessment.",
-                    "next_actions": [
-                        "Request 2 peer witness verifications to advance to Tier 2",
-                        "Review tool handling best practices",
-                    ],
-                    "unclear_steps_tips": [],
+                    "summary": summary,
+                    "next_actions": actions,
+                    "unclear_steps_tips": unclear_tips,
                 }
             )
 

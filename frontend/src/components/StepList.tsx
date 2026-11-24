@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, XCircle, HelpCircle, ChevronDown, Image as ImageIcon } from 'lucide-react'
+import { CheckCircle2, XCircle, HelpCircle, ChevronDown, Image as ImageIcon, Lightbulb } from 'lucide-react'
 import type { StepResult } from '../api/types'
 import { Tag } from './ui/Tag'
 
 interface StepListProps {
   steps: StepResult[]
+  tips?: Array<{ step_id: string; tip: string }>
   className?: string
 }
 
-export function StepList({ steps, className = '' }: StepListProps) {
+export function StepList({ steps, tips = [], className = '' }: StepListProps) {
   const [expandedId, setExpandedId] = useState<string | null>(null)
 
   if (!steps || steps.length === 0) {
@@ -29,6 +30,7 @@ export function StepList({ steps, className = '' }: StepListProps) {
       {steps.map((step, index) => {
         const isExpanded = expandedId === step.id
         const verdict = step.verdict.toLowerCase()
+        const tipObj = tips.find((t) => t.step_id === step.id)
 
         return (
           <div key={step.id} className="py-3.5 first:pt-1 last:pb-1">
@@ -76,6 +78,20 @@ export function StepList({ steps, className = '' }: StepListProps) {
                     <p className="text-xs text-ink/70 font-sans mt-1 leading-normal line-clamp-2">
                       {step.note}
                     </p>
+                  )}
+
+                  {tipObj && verdict !== 'pass' && (
+                    <div className="mt-2 p-2 rounded-lg bg-orange/10 border border-orange/20 flex items-start gap-1.5 text-xs text-orange-950 font-sans">
+                      <Lightbulb className="w-3.5 h-3.5 text-orange shrink-0 mt-0.5" />
+                      <div className="space-y-0.5">
+                        <span className="font-mono text-[10px] font-bold text-orange uppercase tracking-wider block">
+                          Coach Tip:
+                        </span>
+                        <p className="text-[11px] leading-snug text-ink/80">
+                          {tipObj.tip}
+                        </p>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from sqlmodel import Session
 
+from app.agent.coach import generate_coaching
 from app.agent.loop import get_default_ai
 from app.agent.prompts import ANALYZER_SYSTEM_PROMPT, build_analyzer_user_prompt
 from app.ai.base import BaseAI
@@ -125,7 +126,20 @@ def run_review_decision(
         f"Review decision: {decision.upper()} - {reason}",
     ]
 
-    # 8. Update DB Attempt Row
+    # 8. Generate AI Coaching Guidance (Prompt 3)
+    coaching_data = None
+    try:
+        coaching_data = generate_coaching(
+            attempt=attempt,
+            blueprint=blueprint,
+            ai_provider=provider,
+            db=db,
+        )
+        attempt.coaching_json = json.dumps(coaching_data)
+    except Exception as e:
+        logger.warning(f"Error generating coaching in run_review_decision: {e}")
+
+    # 9. Update DB Attempt Row
     attempt.video_score = calculated_score
     attempt.decision = decision
     attempt.status = "reviewed"
@@ -142,4 +156,5 @@ def run_review_decision(
         "rerecord_step_ids": rerecord_candidates if decision == "needs_rerecord" else [],
         "fraud_flags": fraud_flags,
         "agent_log": agent_log,
+        "coaching": coaching_data,
     }
