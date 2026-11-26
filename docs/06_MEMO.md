@@ -32,8 +32,8 @@
 ## 3. Current state
 | Item | Value |
 |---|---|
-| Current phase / task | **Phase 18 / T18.1** |
-| Last PASS | **T18.1** |
+| Current phase / task | **Phase 20 / T20.1** |
+| Last PASS | **T20.1** |
 | Blocked by | nothing |
 | DEMO_MODE | false |
 | API keys set | GEMINI_API_KEY: configured, FALLBACK_AI_KEY: no |
@@ -80,6 +80,12 @@ Format for each entry:
 - Known issues: ...
 - Next: T#.#
 ```
+
+### 2026-11-26 — Task T20.1 — PASS
+- Done: Bulletproof Frame Extraction with FFmpeg Fallback — 1) Created `convert_webm_to_mp4` in `backend/app/video/meta.py` converting browser-recorded `.webm` containers to standard H.264 `.mp4` using `imageio_ffmpeg` (with even-dimension padding) on the fly. 2) In `meta.py`, extracted `_extract_via_opencv` and wrapped OpenCV VideoCapture in try/except with automatic fallback to converted `.mp4` and temporary file cleanup. 3) In `frames.py`, extracted `_save_resized_frame`, `_extract_from_cap`, and `_try_extract_from_path`, wrapped `cv2.VideoCapture` in try/except, and added fallback to `.mp4` conversion whenever OpenCV fails to open or read frames from `.webm`, ensuring sequential fallback for streams with missing headers and supporting `attempt_id` or `output_dir`. 4) Updated `backend/tests/test_video.py` with synthetic `.webm` upload tests, forced OpenCV-failure fallback tests verifying temporary `.mp4` cleanup for both metadata and frame extraction, and corrupted `.webm` tests verifying clean 400 Bad Request handling.
+- Files: backend/app/video/meta.py, backend/app/video/frames.py, backend/tests/test_video.py, docs/06_MEMO.md
+- Tests: pytest -q -> 121 passed in 29.80s.
+- Next: Live demo presentation.
 
 ### 2026-11-24 — Task T18.1 — PASS
 - Done: Hirer Analytics Dashboard — 1) Created `GET /api/directory/analytics` in `backend/app/routers/directory.py` querying `Worker`, `Credential`, and `Vouch` tables to return real-time workforce intelligence: `total_workers`, `tier_distribution` (`tier_1`, `tier_2`, `tier_3`), `trade_distribution`, and `total_vouches`. 2) Added `AnalyticsResponse` schema in `backend/app/schemas.py`. 3) Created `backend/tests/test_analytics.py` verifying analytics calculations, active tier filtering, and revoked credential exclusion. 4) Built `frontend/src/pages/Analytics.tsx` with pure CSS/Tailwind & Framer Motion charts: 3 top KPI summary cards (Total Workers, Witness Vouches, Active Trades), horizontal progress bar chart for Seal Tier Distribution (Tier 1-3), and trade composition horizontal breakdown. 5) Integrated `/analytics` lazy route in `router.tsx` and added "View Analytics" dashboard CTA and header link in `Directory.tsx`.

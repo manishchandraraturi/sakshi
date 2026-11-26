@@ -46,6 +46,24 @@ def create_dummy_video(path: Path, duration_seconds: float = 4.0, fps: int = 10)
     writer.release()
 
 
+def create_dummy_webm(path: Path, duration_seconds: float = 4.0, fps: int = 10):
+    """Generate a synthetic test .webm video file using imageio_ffmpeg."""
+    import imageio_ffmpeg
+    import subprocess
+
+    temp_mp4 = path.with_suffix(".temp.mp4")
+    create_dummy_video(temp_mp4, duration_seconds=duration_seconds, fps=fps)
+    exe = imageio_ffmpeg.get_ffmpeg_exe()
+    subprocess.run(
+        [exe, "-y", "-i", str(temp_mp4), "-c:v", "libvpx", str(path)],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        check=True,
+    )
+    if temp_mp4.exists():
+        temp_mp4.unlink()
+
+
 def test_upload_valid_video(tmp_path):
     # 1. Create a worker and attempt in DB
     with Session(test_engine) as session:
@@ -178,3 +196,129 @@ def test_duplicate_video_fraud_detection(tmp_path):
     flags = [f["code"] for f in body2["data"]["fraud_flags"]]
     assert "DUPLICATE_VIDEO_SHA256" in flags
     assert "UPLOAD_SOURCE" in flags
+
+
+def test_upload_corrupted_webm_video():
+    with Session(test_engine) as session:
+        worker = session.exec(select(Worker)).first()
+        attempt = create_attempt(worker_id=worker.id, skill_id="plumber_joint", db=session)
+        attempt_id = attempt.id
+
+    res = client.post(
+        f"/api/attempts/{attempt_id}/video",
+        files={"file": ("corrupt.webm", b"\x1a\x45\xdf\xa3corruptedwebmbytes", "video/webm")},
+    )
+    assert res.status_code == 400
+    assert res.json()["error"]["code"] in ("INVALID_VIDEO", "FRAME_EXTRACTION_FAILED")
+
+
+def test_upload_valid_webm_video(tmp_path):
+    with Session(test_engine) as session:
+        worker = session.exec(select(Worker)).first()
+        attempt = create_attempt(worker_id=worker.id, skill_id="plumber_joint", db=session)
+        attempt_id = attempt.id
+
+    webm_file = tmp_path / "valid_demo.webm"
+    create_dummy_webm(webm_file, duration_seconds=4.0, fps=10)
+
+    with open(webm_file, "rb") as f:
+        res = client.post(
+            f"/api/attempts/{attempt_id}/video?source=live",
+            files={"file": ("valid_demo.webm", f, "video/webm")},
+        )
+    assert res.status_code == 200
+    body = res.json()
+    assert body["ok"] is True
+    assert body["data"]["status"] == "analyzing"
+    assert body["data"]["frames_count"] > 0
+
+
+def test_extract_frames_webm_fallback(tmp_path, monkeypatch):
+    from app.video import frames as frames_mod
+    from app.video import meta as meta_mod
+
+    webm_file = tmp_path / "test_extract.webm"
+    create_dummy_webm(webm_file, duration_seconds=3.5, fps=10)
+
+    # Simulate OpenCV failing to open/read the .webm directly so ffmpeg conversion is forced
+    real_video_capture = cv2.VideoCapture
+    converted_paths = []
+    real_convert = meta_mod.convert_webm_to_mp4
+
+    def spy_convert(path):
+        out = real_convert(path)
+        if out is not None:
+            converted_paths.append(out)
+        return out
+
+    class BrokenWebMCapture:
+        def isOpened(self):
+            return False
+
+        def read(self):
+            return False, None
+
+        def release(self):
+            pass
+
+    def fake_capture(path_str, *args, **kwargs):
+        if str(path_str) == str(webm_file):
+            return BrokenWebMCapture()
+        return real_video_capture(path_str, *args, **kwargs)
+
+    monkeypatch.setattr(frames_mod.cv2, "VideoCapture", fake_capture)
+    monkeypatch.setattr(frames_mod, "convert_webm_to_mp4", spy_convert)
+
+    out_dir = tmp_path / "frames"
+    extracted = frames_mod.extract_frames(webm_file, out_dir)
+    assert len(extracted) > 0
+    assert all(Path(f).exists() for f in extracted)
+    # Verify fallback ran and temporary .mp4 was cleaned up
+    assert len(converted_paths) == 1
+    assert not converted_paths[0].exists()
+
+
+def test_extract_metadata_webm_opencv_fallback(tmp_path, monkeypatch):
+    from app.video import meta as meta_mod
+
+    webm_file = tmp_path / "test_meta.webm"
+    create_dummy_webm(webm_file, duration_seconds=3.5, fps=10)
+
+    # Force _extract_via_ffmpeg to return None and direct cv2.VideoCapture to fail on .webm
+    monkeypatch.setattr(meta_mod, "_extract_via_ffmpeg", lambda _: None)
+    real_video_capture = cv2.VideoCapture
+    converted_paths = []
+    real_convert = meta_mod.convert_webm_to_mp4
+
+    def spy_convert(path):
+        out = real_convert(path)
+        if out is not None:
+            converted_paths.append(out)
+        return out
+
+    class NoFramesCapture:
+        def isOpened(self):
+            return True
+
+        def read(self):
+            return False, None
+
+        def release(self):
+            pass
+
+    def fake_capture(path_str, *args, **kwargs):
+        if str(path_str) == str(webm_file):
+            return NoFramesCapture()
+        return real_video_capture(path_str, *args, **kwargs)
+
+    monkeypatch.setattr(meta_mod.cv2, "VideoCapture", fake_capture)
+    monkeypatch.setattr(meta_mod, "convert_webm_to_mp4", spy_convert)
+
+    meta = meta_mod.extract_metadata(webm_file)
+    assert meta["duration"] >= 3.0
+    assert meta["width"] == 320
+    assert meta["height"] == 240
+    assert meta["frame_count"] > 0
+    assert len(converted_paths) == 1
+    assert not converted_paths[0].exists()
+
